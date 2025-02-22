@@ -4,7 +4,7 @@ from database.models import FacultyStaff, db
 # from flask_jwt_extended import jwt_required
 
 
-faculty_bp = Blueprint("faculty", __name__)
+faculty_bp = Blueprint(" ", __name__)
 
 @faculty_bp.route("/", methods=["GET"])
 # @jwt_required()
@@ -14,12 +14,12 @@ def get_facultys():
 
 
 # Faculty & Staff Routes
-@faculty_bp.route("/faculty_staff", methods=["GET"])
+@faculty_bp.route("/faculty_staff", methods=["GET"])  #endp checked
 def get_faculty_staff():
     faculty_staff = FacultyStaff.query.all()
     return jsonify([{ "f_id": f.f_id, "p_id": f.p_id, "join_year": f.join_year, "positions": f.positions, "f_or_s": f.f_or_s } for f in faculty_staff])
 
-@faculty_bp.route("/faculty_staff", methods=["POST"])
+@faculty_bp.route("/faculty_staff", methods=["POST"])     #endp checked
 def create_faculty_staff():
     data = request.json
     new_faculty_staff = FacultyStaff(
