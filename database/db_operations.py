@@ -78,3 +78,59 @@ def delete_social_media():
     
     return False
 
+
+from database import db
+from database.models import Person, SocialMedia
+from werkzeug.security import generate_password_hash, check_password_hash
+
+def add_person(email_pri, email_sec, name, phone_no, alt_phone_no, curr_address, perm_address, password, role, sm_id=None):
+    """Add a new person."""
+    hashed_password = generate_password_hash(password)
+    person = Person(
+        email_pri=email_pri,
+        email_sec=email_sec,
+        name=name,
+        phone_no=phone_no,
+        alt_phone_no=alt_phone_no,
+        curr_address=curr_address,
+        perm_address=perm_address,
+        password=hashed_password,
+        role=role,
+        sm_id=sm_id
+    )
+    db.session.add(person)
+    db.session.commit()
+    return person
+
+def get_person(p_id):
+    """Fetch person details by ID."""
+    return Person.query.get(p_id)
+
+def get_all_persons():
+    """Fetch all persons."""
+    return Person.query.all()
+
+def update_person(p_id, **kwargs):
+    """Update person details."""
+    person = Person.query.get(p_id)
+    if not person:
+        return None
+
+    for key, value in kwargs.items():
+        if key == "password":
+            setattr(person, key, generate_password_hash(value))  # Hash new password
+        elif hasattr(person, key):
+            setattr(person, key, value)
+
+    db.session.commit()
+    return person
+
+def delete_person(p_id):
+    """Delete a person."""
+    person = Person.query.get(p_id)
+    if person:
+        db.session.delete(person)
+        db.session.commit()
+        return True
+    return False
+

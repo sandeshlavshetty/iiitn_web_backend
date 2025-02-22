@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from database import db
 
 
-# person table
+
 
 
 
@@ -38,3 +38,21 @@ class SocialMedia(db.Model):
     linkedin = db.Column(db.String(255))
     youtube = db.Column(db.String(255))
 
+# person table
+
+class Person(db.Model):
+    __tablename__ = "person"
+    p_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email_pri = db.Column(db.String(255), unique=True, nullable=False)
+    email_sec = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
+    phone_no = db.Column(db.String(20), nullable=False)
+    alt_phone_no = db.Column(db.String(20))
+    curr_address = db.Column(db.Text)
+    perm_address = db.Column(db.Text)
+    password = db.Column(db.String(255), nullable=False)  # Hashed password
+    role = db.Column(db.String(50), nullable=False)
+    sm_id = db.Column(db.Integer, db.ForeignKey("social_media.sm_id", ondelete="SET NULL"), unique=True)
+
+    # Relationship
+    social_media = db.relationship("SocialMedia", backref="person", uselist=False)
