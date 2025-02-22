@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 import os
 from dotenv import load_dotenv
 from config import Config
-
+from routes.student_routes import student_bp
 
 load_dotenv()  # Load environment variables
 
@@ -20,6 +20,7 @@ app.config.from_object(Config)
 db.init_app(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)  # Initialize JWT
+
 
 
 register_routes(app)  # Register routes from routes/
