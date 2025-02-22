@@ -13,7 +13,7 @@ def student_routes_root():
 
 
 
-@student_bp.route("/students", methods=["GET"])
+@student_bp.route("/students", methods=["GET"])   # end_c
 def get_students():
     students = Student.query.all()
     return jsonify([{ "s_id": s.s_id, "p_id": s.p_id, "join_year": s.join_year, "d_id": s.d_id } for s in students])
