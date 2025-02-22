@@ -1,13 +1,13 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from database.models import db,  Person
+from database.models import db
 from sqlalchemy.exc import IntegrityError
 
 
 student_bp = Blueprint("student", __name__)
 
 @student_bp.route("/", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def student_routes_root():
     return jsonify({"message": "student routes working!"})
 

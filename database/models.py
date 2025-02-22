@@ -5,14 +5,7 @@ db = SQLAlchemy()
 
 # person table
 
-class Person(db.Model):
-    __tablename__ = "person"
-    p_id = db.Column(db.Integer, primary_key=True)
-    email_pri = db.Column(db.String(255), unique=True, nullable=False)
-    name = db.Column(db.String(255), nullable=False)
-    phone_no = db.Column(db.String(20))
-    password = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(50), nullable=False)
+
 
 
 # media tables
@@ -35,3 +28,5 @@ class MediaDocCard(db.Model):
     media_doc_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     doc_file_name = db.Column(db.String(255), nullable=False)
     doc_path = db.Column(db.Text, nullable=False)
+
+
