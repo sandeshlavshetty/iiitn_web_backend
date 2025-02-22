@@ -8,7 +8,7 @@ from database.models import Department, db
 department_bp = Blueprint("department", __name__)
 
 # Department Routes
-@department_bp.route("/", methods=["GET"])
+@department_bp.route("/", methods=["GET"])     #end_c
 def get_departments():
     departments = Department.query.all()
     return jsonify([{ "d_id": d.d_id, "dept_name": d.dept_name, "branch_name": d.branch_name } for d in departments])
