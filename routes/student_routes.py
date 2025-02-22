@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from database.models import db
 from sqlalchemy.exc import IntegrityError
-
+from database.models import Student, db
 
 student_bp = Blueprint("student", __name__)
 
@@ -13,68 +13,48 @@ def student_routes_root():
 
 
 
-# # 🆕 Create a Student
-# @student_bp.route("/student", methods=["POST"])
-# def add_student():
-#     data = request.json
+@student_bp.route("/students", methods=["GET"])
+def get_students():
+    students = Student.query.all()
+    return jsonify([{ "s_id": s.s_id, "p_id": s.p_id, "join_year": s.join_year, "d_id": s.d_id } for s in students])
 
-#     if not all(k in data for k in ("S_id", "P_id", "Join_year", "D_id")):
-#         return jsonify({"error": "Missing required fields"}), 400
+@student_bp.route("/students", methods=["POST"])
+def create_student():
+    data = request.json
+    new_student = Student(
+        s_id=data["s_id"],
+        p_id=data["p_id"],
+        join_year=data["join_year"],
+        media_img_id=data.get("media_img_id"),
+        d_id=data["d_id"]
+    )
+    db.session.add(new_student)
+    db.session.commit()
+    return jsonify({"message": "Student created successfully"}), 201
 
-#     student = Student(
-#         S_id=data["S_id"],
-#         P_id=data["P_id"],
-#         Join_year=data["Join_year"],
-#         media_img_id=data.get("media_img_id"),  # Optional
-#         D_id=data["D_id"]
-#     )
 
-#     try:
-#         db.session.add(student)
-#         db.session.commit()
-#         return jsonify({"message": "Student added successfully", "student": student.to_dict()}), 201
-#     except IntegrityError:
-#         db.session.rollback()
-#         return jsonify({"error": "Student with this ID or P_id already exists"}), 400
+@student_bp.route("/students/<string:s_id>", methods=["PUT"])
+def update_student(s_id):
+    data = request.json
+    student = Student.query.get(s_id)
+    if not student:
+        return jsonify({"message": "Student not found"}), 404
+    
+    student.p_id = data.get("p_id", student.p_id)
+    student.join_year = data.get("join_year", student.join_year)
+    student.media_img_id = data.get("media_img_id", student.media_img_id)
+    student.d_id = data.get("d_id", student.d_id)
+    
+    db.session.commit()
+    return jsonify({"message": "Student updated successfully"}), 200
 
-# # 📥 Get All Students
-# @student_bp.route("/student", methods=["GET"])
-# def get_students():
-#     students = Student.query.all()
-#     return jsonify([student.to_dict() for student in students]), 200
 
-# # 📥 Get Student by S_id
-# @student_bp.route("/student/<string:S_id>", methods=["GET"])
-# def get_student(S_id):
-#     student = Student.query.get(S_id)
-#     if not student:
-#         return jsonify({"error": "Student not found"}), 404
-#     return jsonify(student.to_dict()), 200
+@student_bp.route("/students/<string:s_id>", methods=["DELETE"])
+def delete_student(s_id):
+    student = Student.query.get(s_id)
+    if not student:
+        return jsonify({"message": "Student not found"}), 404
 
-# # ✏️ Update Student
-# @student_bp.route("/student/<string:S_id>", methods=["PUT"])
-# def update_student(S_id):
-#     student = Student.query.get(S_id)
-#     if not student:
-#         return jsonify({"error": "Student not found"}), 404
-
-#     data = request.json
-#     student.P_id = data.get("P_id", student.P_id)
-#     student.Join_year = data.get("Join_year", student.Join_year)
-#     student.media_img_id = data.get("media_img_id", student.media_img_id)
-#     student.D_id = data.get("D_id", student.D_id)
-
-#     db.session.commit()
-#     return jsonify({"message": "Student updated successfully", "student": student.to_dict()}), 200
-
-# # ❌ Delete Student
-# @student_bp.route("/student/<string:S_id>", methods=["DELETE"])
-# def delete_student(S_id):
-#     student = Student.query.get(S_id)
-#     if not student:
-#         return jsonify({"error": "Student not found"}), 404
-
-#     db.session.delete(student)
-#     db.session.commit()
-#     return jsonify({"message": "Student deleted successfully"}), 200
-
+    db.session.delete(student)
+    db.session.commit()
+    return jsonify({"message": "Student deleted successfully"}), 200

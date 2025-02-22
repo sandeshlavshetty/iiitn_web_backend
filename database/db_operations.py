@@ -1,5 +1,5 @@
 from database import db
-from database.models import MediaImageCard, MediaVideoCard, MediaDocCard, SocialMedia, Media
+from database.models import MediaImageCard, MediaVideoCard, MediaDocCard, SocialMedia, Media, Card
 from flask import current_app
 
 
@@ -180,3 +180,30 @@ def delete_media(m_id):
     db.session.delete(media)
     db.session.commit()
     return True
+
+
+
+def add_card(session, card_data):
+    card = Card(**card_data)
+    session.add(card)
+    session.commit()
+    return card
+
+def get_card_by_id(session, c_id):
+    return session.query(Card).filter_by(c_id=c_id).first()
+
+def update_card(session, c_id, card_data):
+    card = session.query(Card).filter_by(c_id=c_id).first()
+    if card:
+        for key, value in card_data.items():
+            setattr(card, key, value)
+        session.commit()
+    return card
+
+def delete_card(session, c_id):
+    card = session.query(Card).filter_by(c_id=c_id).first()
+    if card:
+        session.delete(card)
+        session.commit()
+    return card
+

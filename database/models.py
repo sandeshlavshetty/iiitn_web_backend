@@ -73,3 +73,59 @@ class Media(db.Model):
     media_img_id = db.Column(db.Integer, db.ForeignKey('media_image_card.media_img_id', ondelete='SET NULL'))
     media_vid_id = db.Column(db.Integer, db.ForeignKey('media_video_card.media_vid_id', ondelete='SET NULL'))
     media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))
+
+
+class Card(db.Model):
+    __tablename__ = "card"
+    c_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    c_category = db.Column(db.String(100))
+    c_sub_category = db.Column(db.String(100))
+    title = db.Column(db.String(255))
+    caption = db.Column(db.Text)
+    content = db.Column(db.Text)
+    date = db.Column(db.Date)
+    location = db.Column(db.String(255))
+    media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
+    media_vid_id = db.Column(db.Integer, db.ForeignKey("media_video_card.media_vid_id", ondelete="SET NULL"))
+    media_doc_id = db.Column(db.Integer, db.ForeignKey("media_doc_card.media_doc_id", ondelete="SET NULL"))
+    updated_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
+    updated_time = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    added_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
+    added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    
+    
+
+# Department Table
+class Department(db.Model):
+    __tablename__ = "department"
+    d_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    dept_name = db.Column(db.String(100), nullable=False)
+    branch_name = db.Column(db.String(100), nullable=False)
+    
+
+# Faculty & Staff Table
+class FacultyStaff(db.Model):
+    __tablename__ = "faculty_staff"
+    f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
+    join_year = db.Column(db.Integer, nullable=False)
+    media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
+    d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
+    positions = db.Column(db.Text, nullable=False)
+    f_or_s = db.Column(db.Enum('Faculty', 'Staff'), nullable=False)
+
+    person = db.relationship("Person", backref="faculty_staff", uselist=False)
+    department = db.relationship("Department", backref="faculty_staff")
+    profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
+    
+class Student(db.Model):
+    __tablename__ = "student"
+    s_id = db.Column(db.String(20), primary_key=True)  # BT ID
+    p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
+    join_year = db.Column(db.Integer, nullable=False)
+    media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
+    d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
+
+    person = db.relationship("Person", backref="student", uselist=False)
+    department = db.relationship("Department", backref="students")
+    profile_image = db.relationship("MediaImageCard", backref="student", uselist=False)
