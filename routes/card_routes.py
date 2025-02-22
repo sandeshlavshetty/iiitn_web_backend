@@ -14,9 +14,31 @@ from database import db
 from database.models import Card
 from database.db_operations import add_card, get_card_by_id, update_card, delete_card
 
+# ✅ Fetch Cards in Table Format
+@card_bp.route('/cards', methods=['GET'])    #end_c
+def get_cards_table():
+    cards = Card.query.all()
+    cards_list = [{
+        "c_id": card.c_id,
+        "c_category": card.c_category,
+        "c_sub_category": card.c_sub_category,
+        "title": card.title,
+        "caption": card.caption,
+        "content": card.content,
+        "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+        "location": card.location,
+        "media_img_id": card.media_img_id,
+        "media_vid_id": card.media_vid_id,
+        "media_doc_id": card.media_doc_id,
+        "updated_by": card.updated_by,
+        "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+        "added_by": card.added_by,
+        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+    } for card in cards]
+    
+    return jsonify(cards_list), 200
 
-
-@card_bp.route('/cards', methods=['POST'])
+@card_bp.route('/cards', methods=['POST'])  #end_c
 def create_card():
     data = request.get_json()
     card = add_card(db.session, data)
