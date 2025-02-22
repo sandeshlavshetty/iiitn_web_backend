@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from config import Config
 from routes.student_routes import student_bp
 
+
+ 
 load_dotenv()  # Load environment variables
 
 app = Flask(__name__)
@@ -18,6 +20,7 @@ app.config.from_object(Config)
 
 
 db.init_app(app)
+from database.models import SocialMedia  # ✅ Ensure models are imported
 migrate = Migrate(app, db)
 jwt = JWTManager(app)  # Initialize JWT
 

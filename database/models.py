@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from database import db
 
-db = SQLAlchemy() 
 
 # person table
 
@@ -29,4 +28,13 @@ class MediaDocCard(db.Model):
     doc_file_name = db.Column(db.String(255), nullable=False)
     doc_path = db.Column(db.Text, nullable=False)
 
+#social media 
+
+class SocialMedia(db.Model):
+    __tablename__ = "social_media"
+    sm_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    insta = db.Column(db.String(255))
+    twitter = db.Column(db.String(255))
+    linkedin = db.Column(db.String(255))
+    youtube = db.Column(db.String(255))
 
