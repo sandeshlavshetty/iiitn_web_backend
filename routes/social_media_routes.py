@@ -8,7 +8,7 @@ def fetch_social_media():
     sm_entry = get_social_media()
     if not sm_entry:
         return jsonify({"error": "No social media links found"}), 404
-
+#
     return jsonify({
         "sm_id": sm_entry.sm_id,
         "insta": sm_entry.insta,
