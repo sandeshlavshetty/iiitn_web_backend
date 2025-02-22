@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from database import db
+from datetime import datetime
+
 
 
 
@@ -56,3 +58,18 @@ class Person(db.Model):
 
     # Relationship
     social_media = db.relationship("SocialMedia", backref="person", uselist=False)
+    
+# Media 
+class Media(db.Model):
+    __tablename__ = 'media'
+    m_id = db.Column(db.Integer, primary_key=True)
+    m_category = db.Column(db.String(50), nullable=False)
+    m_sub_category = db.Column(db.String(50), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    updated_by = db.Column(db.Integer, db.ForeignKey('person.p_id'))
+    updated_time = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    added_by = db.Column(db.Integer, db.ForeignKey('person.p_id'))
+    added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    media_img_id = db.Column(db.Integer, db.ForeignKey('media_image_card.media_img_id', ondelete='SET NULL'))
+    media_vid_id = db.Column(db.Integer, db.ForeignKey('media_video_card.media_vid_id', ondelete='SET NULL'))
+    media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))

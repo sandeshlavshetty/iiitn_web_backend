@@ -1,7 +1,8 @@
 from database import db
-from database.models import MediaImageCard, MediaVideoCard, MediaDocCard
-from database.models import SocialMedia
+from database.models import MediaImageCard, MediaVideoCard, MediaDocCard, SocialMedia, Media
 from flask import current_app
+
+
 
 # for media uploads 
 def add_media(file_name, file_path, media_type):
@@ -134,3 +135,48 @@ def delete_person(p_id):
         return True
     return False
 
+
+
+
+def create_media(data):
+    new_media = Media(
+        m_category=data.get('m_category'),
+        m_sub_category=data.get('m_sub_category'),
+        title=data.get('title'),
+        updated_by=data.get('updated_by'),
+        added_by=data.get('added_by'),
+        media_img_id=data.get('media_img_id'),
+        media_vid_id=data.get('media_vid_id'),
+        media_doc_id=data.get('media_doc_id')
+    )
+    db.session.add(new_media)
+    db.session.commit()
+    return new_media
+
+def get_all_media():
+    return Media.query.all()
+
+def get_media_by_id(m_id):
+    return Media.query.get(m_id)
+
+def update_media(m_id, data):
+    media = Media.query.get(m_id)
+    if not media:
+        return None
+    media.M_category = data.get('m_category', media.m_category)
+    media.M_sub_category = data.get('m_sub_category', media.m_sub_category)
+    media.Title = data.get('title', media.Title)
+    media.Updated_by = data.get('updated_by', media.Updated_by)
+    media.media_img_id = data.get('media_img_id', media.media_img_id)
+    media.media_vid_id = data.get('media_vid_id', media.media_vid_id)
+    media.media_doc_id = data.get('media_doc_id', media.media_doc_id)
+    db.session.commit()
+    return media
+
+def delete_media(m_id):
+    media = Media.query.get(m_id)
+    if not media:
+        return False
+    db.session.delete(media)
+    db.session.commit()
+    return True
