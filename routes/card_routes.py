@@ -59,3 +59,60 @@ def edit_card(c_id):
 def remove_card(c_id):
     card = delete_card(db.session, c_id)
     return jsonify({"message": "Card deleted"}) if card else (jsonify({"message": "Card not found"}), 404)
+
+
+
+
+# ✅ Fetch Cards by Category
+@card_bp.route('/cards/category/<string:category>', methods=['GET'])
+def get_cards_by_category(category):
+    cards = Card.query.filter_by(c_category=category).all()
+    if not cards:
+        return jsonify({"message": "No cards found for this category"}), 404
+    
+    cards_list = [{
+        "c_id": card.c_id,
+        "c_category": card.c_category,
+        "c_sub_category": card.c_sub_category,
+        "title": card.title,
+        "caption": card.caption,
+        "content": card.content,
+        "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+        "location": card.location,
+        "media_img_id": card.media_img_id,
+        "media_vid_id": card.media_vid_id,
+        "media_doc_id": card.media_doc_id,
+        "updated_by": card.updated_by,
+        "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+        "added_by": card.added_by,
+        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+    } for card in cards]
+    
+    return jsonify(cards_list), 200
+
+# ✅ Fetch Cards by Sub-Category
+@card_bp.route('/cards/sub_category/<string:sub_category>', methods=['GET'])
+def get_cards_by_sub_category(sub_category):
+    cards = Card.query.filter_by(c_sub_category=sub_category).all()
+    if not cards:
+        return jsonify({"message": "No cards found for this sub-category"}), 404
+    
+    cards_list = [{
+        "c_id": card.c_id,
+        "c_category": card.c_category,
+        "c_sub_category": card.c_sub_category,
+        "title": card.title,
+        "caption": card.caption,
+        "content": card.content,
+        "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+        "location": card.location,
+        "media_img_id": card.media_img_id,
+        "media_vid_id": card.media_vid_id,
+        "media_doc_id": card.media_doc_id,
+        "updated_by": card.updated_by,
+        "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+        "added_by": card.added_by,
+        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+    } for card in cards]
+    
+    return jsonify(cards_list), 200
