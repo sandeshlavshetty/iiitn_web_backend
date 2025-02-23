@@ -3,7 +3,7 @@ import os
 from utils.file_helper import save_file
 from database.db_operations import add_media, get_media, delete_media , create_media,get_all_media,get_media_by_id,update_media,delete_media
 # from flask_jwt_extended import jwt_required
-
+from database.models import Media  # Ensure Media model is imported
 media_bp = Blueprint("media", __name__)
 
 @media_bp.route("/", methods=["GET"])
@@ -119,3 +119,41 @@ def remove_media(m_id):
     if not delete_media(m_id):
         return jsonify({'error': 'Media not found'}), 404
     return jsonify({'message': 'Media deleted successfully'}), 200
+
+
+
+@media_bp.route('/media/category/<string:category>', methods=['GET'])
+def get_media_by_category(category):
+    media_list = Media.query.filter_by(m_category=category).all()
+    if not media_list:
+        return jsonify({"message": "No media found for this category"}), 404
+    return jsonify([{ 
+        'M_id': media.m_id, 
+        'M_category': media.m_category, 
+        'Title': media.title,
+        'Updated_by': media.updated_by,
+        'Updated_time': media.updated_time,
+        'Added_by': media.added_by,
+        'Added_time': media.added_time,
+        'media_img_id': media.media_img_id,
+        'media_vid_id': media.media_vid_id,
+        'media_doc_id': media.media_doc_id
+    } for media in media_list]), 200
+
+@media_bp.route('/media/sub_category/<string:sub_category>', methods=['GET'])
+def get_media_by_sub_category(sub_category):
+    media_list = Media.query.filter_by(m_sub_category=sub_category).all()
+    if not media_list:
+        return jsonify({"message": "No media found for this sub-category"}), 404
+    return jsonify([{ 
+        'M_id': media.m_id, 
+        'M_sub_category': media.m_sub_category, 
+        'Title': media.title,
+        'Updated_by': media.updated_by,
+        'Updated_time': media.updated_time,
+        'Added_by': media.added_by,
+        'Added_time': media.added_time,
+        'media_img_id': media.media_img_id,
+        'media_vid_id': media.media_vid_id,
+        'media_doc_id': media.media_doc_id
+    } for media in media_list]), 200
