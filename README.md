@@ -36,6 +36,11 @@ college_backend/
 ✅ utils/ → Helper functions (hashing, JWT, file handling)
 ✅ migrations/ → Stores database migration history
 
+note:- 
+from flask_cors import CORS
+
+CORS(auth_bp, resources={r"/*": {"origins": "*"}})
+CORS(media_bp, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # API Endpoints
 

@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from config import Config
 from routes.student_routes import student_bp
+from flask_cors import CORS  # Import CORS
 
 
  
@@ -18,6 +19,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config.from_object(Config)
 
+# Enable CORS globally
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 db.init_app(app)
 from database.models import SocialMedia  # ✅ Ensure models are imported
