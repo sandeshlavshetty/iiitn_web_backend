@@ -2,7 +2,7 @@ Folder PATH listing for volume OS
 Volume serial number is C6F6-A674
 C:.
 |   .env
-|   .gitignore
+|   .gitignore                  
 |   app.py
 |   config.py
 |   firebase_credentials.json
@@ -10,9 +10,7 @@ C:.
 |   README.md
 |   requirements.txt
 |   
-+---.venv
 |   |   .gitignore
-|   |   pyvenv.cfg
 |   |   
 |   +---Include
 |   |   \---site
