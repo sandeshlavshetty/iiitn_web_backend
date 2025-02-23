@@ -103,9 +103,25 @@ class Department(db.Model):
     branch_name = db.Column(db.String(100), nullable=False)
     
 
-# Faculty & Staff Table
+# # Faculty & Staff Table
+# class FacultyStaff(db.Model):
+#     __tablename__ = "faculty_staff"
+#     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
+#     join_year = db.Column(db.Integer, nullable=False)
+#     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
+#     d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
+#     positions = db.Column(db.Text, nullable=False)
+#     f_or_s = db.Column(db.Enum('Faculty', 'Staff'), nullable=False)
+
+#     person = db.relationship("Person", backref="faculty_staff", uselist=False)
+#     department = db.relationship("Department", backref="faculty_staff")
+#     profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
+    
+    
 class FacultyStaff(db.Model):
     __tablename__ = "faculty_staff"
+
     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
     join_year = db.Column(db.Integer, nullable=False)
@@ -114,10 +130,37 @@ class FacultyStaff(db.Model):
     positions = db.Column(db.Text, nullable=False)
     f_or_s = db.Column(db.Enum('Faculty', 'Staff'), nullable=False)
 
+    education = db.Column(db.Text)  # New field
+    experience = db.Column(db.Text)  # New field
+    teaching = db.Column(db.Text)  # New field
+    research = db.Column(db.Text)  # New field
+    pub_id = db.Column(db.Integer, db.ForeignKey("publication.pub_id", ondelete="SET NULL"))
+
+    # Relationships
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
     department = db.relationship("Department", backref="faculty_staff")
     profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
-    
+    publication = db.relationship("Publication", backref="faculty_research", uselist=False)
+
+    def to_dict(self):
+        return {
+            "f_id": self.f_id,
+            "p_id": self.p_id,
+            "join_year": self.join_year,
+            "media_img_id": self.media_img_id,
+            "d_id": self.d_id,
+            "positions": self.positions,
+            "f_or_s": self.f_or_s,
+            "education": self.education,
+            "experience": self.experience,
+            "teaching": self.teaching,
+            "research": self.research,
+            "pub_id": self.pub_id
+        }    
+
+
+
+
 class Student(db.Model):
     __tablename__ = "student"
     s_id = db.Column(db.String(20), primary_key=True)  # BT ID
@@ -129,3 +172,16 @@ class Student(db.Model):
     person = db.relationship("Person", backref="student", uselist=False)
     department = db.relationship("Department", backref="students")
     profile_image = db.relationship("MediaImageCard", backref="student", uselist=False)
+    
+    
+    
+class Publication(db.Model):
+    __tablename__ = 'publication'
+    
+    pub_id = db.Column(db.Integer, primary_key=True)  # Auto-incrementing Primary Key
+    title = db.Column(db.Text, nullable=False)  # Title is required
+    content = db.Column(db.Text)  # Optional content
+    link = db.Column(db.Text)  # Optional link to publication
+
+    # Relationship (if needed for backref)
+    faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True)
