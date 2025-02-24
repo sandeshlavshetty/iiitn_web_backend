@@ -26,6 +26,7 @@ def upload_file():
     if not file_path:
         return jsonify({"error": "Invalid file type"}), 400
 
+    print(f"File name :- {file.filename}")
     media_entry = add_media(file.filename, file_path, media_type)
     if not media_entry:
         return jsonify({"error": "Invalid media type"}), 400
@@ -65,7 +66,7 @@ def delete_media_file(media_type, media_id):
 
 
 @media_bp.route('/media', methods=['POST'])
-def add_media():
+def create_new_media():
     data = request.get_json()
     new_media = create_media(data)
     return jsonify({'message': 'Media added successfully', 'm_id': new_media.M_id}), 201
