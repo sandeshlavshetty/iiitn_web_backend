@@ -128,7 +128,7 @@ class FacultyStaff(db.Model):
     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
     d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
     positions = db.Column(db.Text, nullable=False)
-    f_or_s = db.Column(db.Enum('Faculty', 'Staff'), nullable=False)
+    f_or_s = db.Column(db.Enum('Faculty', 'Staff', name='ForS'), nullable=False)
 
     education = db.Column(db.Text)  # New field
     experience = db.Column(db.Text)  # New field
