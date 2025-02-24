@@ -69,20 +69,20 @@ def delete_media_file(media_type, media_id):
 def create_new_media():
     data = request.get_json()
     new_media = create_media(data)
-    return jsonify({'message': 'Media added successfully', 'm_id': new_media.M_id}), 201
+    return jsonify({'message': 'Media added successfully', 'm_id': new_media.m_id}), 201
 
 @media_bp.route('/media', methods=['GET'])
 def fetch_all_media():
     media_list = get_all_media()
     return jsonify([{
-        'M_id': media.m_id,
-        'M_category': media.m_category,
-        'M_sub_category': media.m_sub_category,
-        'Title': media.title,
-        'Updated_by': media.updated_by,
-        'Updated_time': media.updated_time,
-        'Added_by': media.added_by,
-        'Added_time': media.added_time,
+        'm_id': media.m_id,
+        'm_category': media.m_category,
+        'm_sub_category': media.m_sub_category,
+        'title': media.title,
+        'updated_by': media.updated_by,
+        'updated_time': media.updated_time,
+        'added_by': media.added_by,
+        'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
         'media_doc_id': media.media_doc_id
@@ -94,14 +94,14 @@ def fetch_media_by_id(m_id):
     if not media:
         return jsonify({'error': 'Media not found'}), 404
     return jsonify({
-        'M_id': media.m_id,
-        'M_category': media.m_category,
-        'M_sub_category': media.m_sub_category,
-        'Title': media.title,
-        'Updated_by': media.updated_by,
-        'Updated_time': media.updated_time,
-        'Added_by': media.added_by,
-        'Added_time': media.added_time,
+        'm_id': media.m_id,
+        'm_category': media.m_category,
+        'm_sub_category': media.m_sub_category,
+        'title': media.title,
+        'updated_by': media.updated_by,
+        'updated_time': media.updated_time,
+        'added_by': media.added_by,
+        'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
         'media_doc_id': media.media_doc_id
@@ -129,13 +129,13 @@ def get_media_by_category(category):
     if not media_list:
         return jsonify({"message": "No media found for this category"}), 404
     return jsonify([{ 
-        'M_id': media.m_id, 
-        'M_category': media.m_category, 
-        'Title': media.title,
-        'Updated_by': media.updated_by,
-        'Updated_time': media.updated_time,
-        'Added_by': media.added_by,
-        'Added_time': media.added_time,
+        'm_id': media.m_id, 
+        'm_category': media.m_category, 
+        'title': media.title,
+        'updated_by': media.updated_by,
+        'updated_time': media.updated_time,
+        'added_by': media.added_by,
+        'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
         'media_doc_id': media.media_doc_id
@@ -147,13 +147,13 @@ def get_media_by_sub_category(sub_category):
     if not media_list:
         return jsonify({"message": "No media found for this sub-category"}), 404
     return jsonify([{ 
-        'M_id': media.m_id, 
-        'M_sub_category': media.m_sub_category, 
-        'Title': media.title,
-        'Updated_by': media.updated_by,
-        'Updated_time': media.updated_time,
-        'Added_by': media.added_by,
-        'Added_time': media.added_time,
+        'm_id': media.m_id, 
+        'm_sub_category': media.m_sub_category, 
+        'title': media.title,
+        'updated_by': media.updated_by,
+        'updated_time': media.updated_time,
+        'added_by': media.added_by,
+        'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
         'media_doc_id': media.media_doc_id
