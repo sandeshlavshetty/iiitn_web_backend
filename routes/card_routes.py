@@ -12,7 +12,7 @@ def get_cards():
 
 from database import db
 from database.models import Card
-from database.db_operations import add_card, get_card_by_id, update_card, delete_card
+from database.db_operations import add_card, get_card_by_id, update_card, delete_card, get_media
 
 # ✅ Fetch Cards in Table Format
 @card_bp.route('/cards', methods=['GET'])    #end_c
@@ -63,32 +63,70 @@ def remove_card(c_id):
 
 
 
-# ✅ Fetch Cards by Category
 @card_bp.route('/cards/category/<string:category>', methods=['GET'])
 def get_cards_by_category(category):
     cards = Card.query.filter_by(c_category=category).all()
+    media_types = ["image", "video", "doc"]
+
     if not cards:
         return jsonify({"message": "No cards found for this category"}), 404
-    
-    cards_list = [{
-        "c_id": card.c_id,
-        "c_category": card.c_category,
-        "c_sub_category": card.c_sub_category,
-        "title": card.title,
-        "caption": card.caption,
-        "content": card.content,
-        "date": card.date.strftime('%Y-%m-%d') if card.date else None,
-        "location": card.location,
-        "media_img_id": card.media_img_id,
-        "media_vid_id": card.media_vid_id,
-        "media_doc_id": card.media_doc_id,
-        "updated_by": card.updated_by,
-        "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
-        "added_by": card.added_by,
-        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
-    } for card in cards]
-    
+
+    cards_list = []
+    for card in cards:
+        media_img = get_media(media_types[0], card.media_img_id)
+        media_vid = get_media(media_types[1], card.media_vid_id)
+        media_doc = get_media(media_types[2], card.media_doc_id)
+
+        cards_list.append({
+            "c_id": card.c_id,
+            "c_category": card.c_category,
+            "c_sub_category": card.c_sub_category,
+            "title": card.title,
+            "caption": card.caption,
+            "content": card.content,
+            "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+            "location": card.location,
+            "media_img_path": media_img.image_path if media_img else None,
+            "media_vid_path": media_vid.video_path if media_vid else None,
+            "media_doc_path": media_doc.doc_path if media_doc else None,
+            "updated_by": card.updated_by,
+            "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+            "added_by": card.added_by,
+            "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+        })
+
     return jsonify(cards_list), 200
+
+
+# # ✅ Fetch Cards by Category
+# @card_bp.route('/cards/category/<string:category>', methods=['GET'])
+# def get_cards_by_category(category):
+#     cards = Card.query.filter_by(c_category=category).all()
+#     if not cards:
+#         return jsonify({"message": "No cards found for this category"}), 404
+    
+    
+    
+#     cards_list = [{
+#         "c_id": card.c_id,
+#         "c_category": card.c_category,
+#         "c_sub_category": card.c_sub_category,
+#         "title": card.title,
+#         "caption": card.caption,
+#         "content": card.content,
+#         "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+#         "location": card.location,
+#         "media_img_id": card.media_img_id,
+#         "media_vid_id": card.media_vid_id,
+#         "media_doc_id": card.media_doc_id,
+#         "updated_by": card.updated_by,
+#         "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+#         "added_by": card.added_by,
+#         "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+#     } for card in cards]
+    
+#     return jsonify(cards_list), 200
+
 
 # ✅ Fetch Cards by Sub-Category
 @card_bp.route('/cards/sub_category/<string:sub_category>', methods=['GET'])
