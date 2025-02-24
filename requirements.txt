@@ -25,7 +25,7 @@ google-cloud-storage==3.0.0
 google-crc32c==1.6.0
 google-resumable-media==2.7.2
 googleapis-common-protos==1.68.0
-graphviz==0.20.3
+
 greenlet==3.1.1
 grpcio==1.70.0
 grpcio-status==1.70.0
@@ -44,7 +44,7 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pycparser==2.22
 pydot==3.0.4
-pygraphviz==1.14
+
 PyJWT==2.10.1
 pyparsing==3.2.1
 python-dotenv==1.0.1
