@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from config import Config
 from routes.student_routes import student_bp
 from flask_cors import CORS  # Import CORS
-
+from database import init_db
 
  
 load_dotenv()  # Load environment variables
@@ -22,7 +22,8 @@ app.config.from_object(Config)
 # Enable CORS globally
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-db.init_app(app)
+# db.init_app(app)
+init_db(app)
 from database.models import SocialMedia  # ✅ Ensure models are imported
 migrate = Migrate(app, db)
 jwt = JWTManager(app)  # Initialize JWT
