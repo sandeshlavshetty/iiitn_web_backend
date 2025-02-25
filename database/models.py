@@ -140,7 +140,8 @@ class FacultyStaff(db.Model):
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
     department = db.relationship("Department", backref="faculty_staff")
     profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
-    publication = db.relationship("Publication", backref="faculty_research", uselist=False)
+    publication = db.relationship("Publication", backref="faculty_research", uselist=False, overlaps="publications,faculty_research")
+
 
     def to_dict(self):
         return {
@@ -184,4 +185,4 @@ class Publication(db.Model):
     link = db.Column(db.Text)  # Optional link to publication
 
     # Relationship (if needed for backref)
-    faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True)
+    faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True, overlaps="faculty_research,publications")

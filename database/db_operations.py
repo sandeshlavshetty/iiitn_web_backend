@@ -25,9 +25,11 @@ def get_media(media_type, media_id):
     if media_type == "image":
         return MediaImageCard.query.get(media_id)
     elif media_type == "video":
-        return MediaVideoCard.query.get(media_id)
+        if media_id:
+            return MediaVideoCard.query.get(media_id)
     elif media_type == "doc":
-        return MediaDocCard.query.get(media_id)
+        if media_id:
+            return MediaDocCard.query.get(media_id)
     return None
 
 def delete_media(media_type, media_id):
