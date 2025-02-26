@@ -210,3 +210,14 @@ class Publication(db.Model):
     
      # Many-to-Many Relationship with FacultyStaff
     faculty_members = db.relationship("FacultyStaff", secondary=faculty_publication, back_populates="publications")
+
+
+
+class Alumni(db.Model):
+    __tablename__ = 'alumni'
+
+    s_id = db.Column(db.String(20), db.ForeignKey('student.s_id'), primary_key=True)
+    curr_org = db.Column(db.String(255), nullable=True)
+    brief = db.Column(db.Text, nullable=True)
+
+    student = db.relationship('Student', backref=db.backref('alumni', uselist=False))
