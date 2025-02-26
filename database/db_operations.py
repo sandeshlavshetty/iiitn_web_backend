@@ -1,6 +1,7 @@
 from database import db
 from database.models import MediaImageCard, MediaVideoCard, MediaDocCard, SocialMedia, Media, Card
 from flask import current_app
+from utils.file_helper import delete_file
 
 
 
@@ -34,15 +35,20 @@ def get_media(media_type, media_id):
             return MediaDocCard.query.get(media_id)
     return None
 
-def delete_media(media_type, media_id):
-    """Delete media entry from DB."""
+def delete_media_type(media_type, media_id):
     media = get_media(media_type, media_id)
+    if not media:
+        return False  # Media does not exist in the database
     
-    if media:
-        db.session.delete(media)
-        db.session.commit()
-        return True
-    return False
+    
+    supa_delete = delete_file(media.image_path)
+    if supa_delete == "supa delete error":  # Fixing check
+        return False  # Prevent database deletion if Supabase deletion fails
+
+    db.session.delete(media)
+    db.session.commit()
+    return True
+
 
 
 # this is for social media

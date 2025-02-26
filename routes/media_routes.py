@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, current_app
 import os
-from utils.file_helper import save_file
-from database.db_operations import add_media, get_media, delete_media , create_media,get_all_media,get_media_by_id,update_media,delete_media
+from utils.file_helper import save_file,delete_file,update_file
+from database.db_operations import add_media, get_media, delete_media_type, create_media,get_all_media,get_media_by_id,update_media,delete_media
+
 # from flask_jwt_extended import jwt_required
 from database.models import Media  # Ensure Media model is imported
 from config import Config
@@ -13,7 +14,7 @@ def get_medias():
     return jsonify({"message": "media routes working!"})
 
 
-
+# img,video,doc routes
 
 @media_bp.route("/upload", methods=["POST"])
 def upload_file():
@@ -47,7 +48,6 @@ def get_media_details(media_type, media_id):
     media = get_media(media_type, media_id)
     if not media:
         return jsonify({"error": "Media not found"}), 404
-
     return jsonify({
         "media_id": media.media_img_id if media_type == "image" else
                     media.media_vid_id if media_type == "video" else
@@ -62,9 +62,15 @@ def get_media_details(media_type, media_id):
 
 @media_bp.route("/<media_type>/<int:media_id>", methods=["DELETE"])
 def delete_media_file(media_type, media_id):
-    if delete_media(media_type, media_id):
+    result = delete_media_type(media_type, media_id)
+    if result:
         return jsonify({"message": "Media deleted successfully"})
+    
     return jsonify({"error": "Media not found"}), 404
+
+
+# Medai table routes
+
 
 
 @media_bp.route('/media', methods=['POST'])

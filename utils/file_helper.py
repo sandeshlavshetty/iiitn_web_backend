@@ -29,15 +29,18 @@ def save_file(file):
     return file_path
 
 def delete_file(file_path):
-    if not file_path :
-        return None
+    if not file_path:
+        return None  # Ensure early return
     
     delete_response = supabase.storage.from_(Config.SUPABASE_BUCKET).remove([file_path])
     
-    if not delete_response:
-        return None
+    print(f"Supabase delete response: {delete_response}")  # Debugging
     
-    return delete_response
+    if not delete_response:  # If deletion fails
+        return "supa delete error"
+    
+    return True
+
 
 def update_file(file,file_path_global):
     if not file or not allowed_file(file.filename):
