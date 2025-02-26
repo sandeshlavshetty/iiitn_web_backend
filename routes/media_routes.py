@@ -18,11 +18,12 @@ def get_medias():
 def upload_file():
     if "file" not in request.files or "media_type" not in request.form:
         return jsonify({"error": "File and media_type are required"}), 400
-
+    print("supabase upload route is called")
     file = request.files["file"]
     media_type = request.form["media_type"]
 
     file_path = save_file(file)  # Store locally
+   
     if not file_path:
         return jsonify({"error": "Invalid file type"}), 400
 
