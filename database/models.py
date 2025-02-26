@@ -93,10 +93,6 @@ class Media(db.Model):
 #     added_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
 #     added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
 
 class Card(db.Model):
     __tablename__ = "card"
