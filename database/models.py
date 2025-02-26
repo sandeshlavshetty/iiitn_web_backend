@@ -75,24 +75,6 @@ class Media(db.Model):
     media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))
 
 
-# class Card(db.Model):
-#     __tablename__ = "card"
-#     c_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     c_category = db.Column(db.String(100))
-#     c_sub_category = db.Column(db.String(100))
-#     title = db.Column(db.String(255))
-#     caption = db.Column(db.Text)
-#     content = db.Column(db.Text)
-#     date = db.Column(db.Date)
-#     location = db.Column(db.String(255))
-#     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
-#     media_vid_id = db.Column(db.Integer, db.ForeignKey("media_video_card.media_vid_id", ondelete="SET NULL"))
-#     media_doc_id = db.Column(db.Integer, db.ForeignKey("media_doc_card.media_doc_id", ondelete="SET NULL"))
-#     updated_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
-#     updated_time = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
-#     added_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
-#     added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
-
 
 class Card(db.Model):
     __tablename__ = "card"
@@ -148,20 +130,12 @@ class Department(db.Model):
     branch_name = db.Column(db.String(100), nullable=False)
     
 
-# # Faculty & Staff Table
-# class FacultyStaff(db.Model):
-#     __tablename__ = "faculty_staff"
-#     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
-#     join_year = db.Column(db.Integer, nullable=False)
-#     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
-#     d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
-#     positions = db.Column(db.Text, nullable=False)
-#     f_or_s = db.Column(db.Enum('Faculty', 'Staff'), nullable=False)
-
-#     person = db.relationship("Person", backref="faculty_staff", uselist=False)
-#     department = db.relationship("Department", backref="faculty_staff")
-#     profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
+# Many-to-Many Association Table (FacultyStaff <-> Publication)
+faculty_publication = db.Table(
+    "faculty_publication",
+    db.Column("f_id", db.Integer, db.ForeignKey("faculty_staff.f_id", ondelete="CASCADE"), primary_key=True),
+    db.Column("pub_id", db.Integer, db.ForeignKey("publication.pub_id", ondelete="CASCADE"), primary_key=True)
+)
     
     
 class FacultyStaff(db.Model):
@@ -187,6 +161,8 @@ class FacultyStaff(db.Model):
     profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
     publication = db.relationship("Publication", backref="faculty_research", uselist=False, overlaps="publications,faculty_research")
 
+    # Many-to-Many Relationship with Publications
+    publications = db.relationship("Publication", secondary=faculty_publication, back_populates="faculty_members")
 
     def to_dict(self):
         return {
@@ -229,5 +205,8 @@ class Publication(db.Model):
     content = db.Column(db.Text)  # Optional content
     link = db.Column(db.Text)  # Optional link to publication
 
-    # Relationship (if needed for backref)
-    faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True, overlaps="faculty_research,publications")
+    # # Relationship (if needed for backref)
+    # faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True, overlaps="faculty_research,publications")
+    
+     # Many-to-Many Relationship with FacultyStaff
+    faculty_members = db.relationship("FacultyStaff", secondary=faculty_publication, back_populates="publications")
