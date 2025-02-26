@@ -4,6 +4,7 @@ from utils.file_helper import save_file
 from database.db_operations import add_media, get_media, delete_media , create_media,get_all_media,get_media_by_id,update_media,delete_media
 # from flask_jwt_extended import jwt_required
 from database.models import Media  # Ensure Media model is imported
+from config import Config
 media_bp = Blueprint("media", __name__)
 
 @media_bp.route("/", methods=["GET"])
@@ -27,7 +28,7 @@ def upload_file():
     if not file_path:
         return jsonify({"error": "Invalid file type"}), 400
 
-    print(f"File name :- {file.filename}")
+    # print(f"File name :- {file.filename}")
     media_entry = add_media(file.filename, file_path, media_type)
     if not media_entry:
         return jsonify({"error": "Invalid media type"}), 400
@@ -54,9 +55,9 @@ def get_media_details(media_type, media_id):
         "file_name": media.image_file_name if media_type == "image" else
                      media.video_file_name if media_type == "video" else
                      media.doc_file_name,
-        "file_path": media.image_path if media_type == "image" else
-                     media.video_path if media_type == "video" else
-                     media.doc_path
+        "file_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media_type == "image" else
+                     os.path.join(Config.SUPABASE_STORAGE_URL,media.video_path) if media_type == "video" else
+                     os.path.join(Config.SUPABASE_STORAGE_URL,media.doc_path)
     })
 
 @media_bp.route("/<media_type>/<int:media_id>", methods=["DELETE"])
