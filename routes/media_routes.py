@@ -73,7 +73,7 @@ def delete_media_file(media_type, media_id):
 def give_image_url(media_path):
     if media_path :
         print(f"public url :- {os.path.join(Config.SUPABASE_STORAGE_URL,media_path)}")
-        return os.path.join(Config.SUPABASE_STORAGE_URL,media_path)
+        return jsonify({"url": os.path.join(Config.SUPABASE_STORAGE_URL,media_path)})
     
     return None
 
