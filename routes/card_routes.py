@@ -153,3 +153,37 @@ def toggle_card_visibility(c_id):
         "c_id": card.c_id,
         "new_visibility": card.visibility
     }), 200
+
+
+@card_bp.route('/cards/grouped/<string:category>', methods=['GET'])
+def get_grouped_cards_by_category(category):
+    """Group cards by sub-category under a given category."""
+    cards = Card.query.filter_by(c_category=category).all()
+
+    if not cards:
+        return jsonify({"message": "No cards found for this category"}), 404
+
+    grouped_cards = {}
+    for card in cards:
+        sub_category = card.c_sub_category
+        if sub_category not in grouped_cards:
+            grouped_cards[sub_category] = []
+        
+        grouped_cards[sub_category].append({
+            "c_id": card.c_id,
+            "title": card.title,
+            "caption": card.caption,
+            "content": card.content,
+            "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+            "location": card.location,
+            "media_img_id": card.media_img_id,
+            "media_vid_id": card.media_vid_id,
+            "media_doc_id": card.media_doc_id,
+            "updated_by": card.updated_by,
+            "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+            "added_by": card.added_by,
+            "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
+            "visibility": card.visibility
+        })
+
+    return jsonify(grouped_cards), 200
