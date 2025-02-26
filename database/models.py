@@ -75,8 +75,32 @@ class Media(db.Model):
     media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))
 
 
+# class Card(db.Model):
+#     __tablename__ = "card"
+#     c_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     c_category = db.Column(db.String(100))
+#     c_sub_category = db.Column(db.String(100))
+#     title = db.Column(db.String(255))
+#     caption = db.Column(db.Text)
+#     content = db.Column(db.Text)
+#     date = db.Column(db.Date)
+#     location = db.Column(db.String(255))
+#     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
+#     media_vid_id = db.Column(db.Integer, db.ForeignKey("media_video_card.media_vid_id", ondelete="SET NULL"))
+#     media_doc_id = db.Column(db.Integer, db.ForeignKey("media_doc_card.media_doc_id", ondelete="SET NULL"))
+#     updated_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
+#     updated_time = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+#     added_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
+#     added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
 class Card(db.Model):
     __tablename__ = "card"
+    
     c_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     c_category = db.Column(db.String(100))
     c_sub_category = db.Column(db.String(100))
@@ -92,6 +116,31 @@ class Card(db.Model):
     updated_time = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
     added_by = db.Column(db.Integer, db.ForeignKey("person.p_id"))
     added_time = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    # New column for visibility (default is True)
+    visibility = db.Column(db.Boolean, default=True, nullable=False)
+
+    def to_dict(self):
+        """Convert Card object to dictionary format for JSON responses."""
+        return {
+            "c_id": self.c_id,
+            "c_category": self.c_category,
+            "c_sub_category": self.c_sub_category,
+            "title": self.title,
+            "caption": self.caption,
+            "content": self.content,
+            "date": self.date.strftime('%Y-%m-%d') if self.date else None,
+            "location": self.location,
+            "media_img_id": self.media_img_id,
+            "media_vid_id": self.media_vid_id,
+            "media_doc_id": self.media_doc_id,
+            "updated_by": self.updated_by,
+            "updated_time": self.updated_time.strftime('%Y-%m-%d %H:%M:%S') if self.updated_time else None,
+            "added_by": self.added_by,
+            "added_time": self.added_time.strftime('%Y-%m-%d %H:%M:%S') if self.added_time else None,
+            "visibility": self.visibility
+        }
+
     
     
 
