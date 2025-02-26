@@ -42,7 +42,8 @@ def get_cards_table():
 @card_bp.route('/cards', methods=['POST'])  #end_c
 def create_card():
     data = request.get_json()
-    
+    # Default to True if visibility is not provided
+    data["visibility"] = data.get("visibility", True)
     card = add_card(db.session, data)
     return jsonify({"message": "Card created", "card": card.c_id}), 201
 
