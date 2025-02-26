@@ -33,7 +33,8 @@ def get_cards_table():
         "updated_by": card.updated_by,
         "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
         "added_by": card.added_by,
-        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
+        "visibility": card.visibility  # ✅ Added visibility
     } for card in cards]
     
     return jsonify(cards_list), 200
@@ -41,6 +42,7 @@ def get_cards_table():
 @card_bp.route('/cards', methods=['POST'])  #end_c
 def create_card():
     data = request.get_json()
+    
     card = add_card(db.session, data)
     return jsonify({"message": "Card created", "card": card.c_id}), 201
 
