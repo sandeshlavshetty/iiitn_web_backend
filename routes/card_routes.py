@@ -95,7 +95,8 @@ def get_cards_by_category(category):
             "updated_by": card.updated_by,
             "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
             "added_by": card.added_by,
-            "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None
+            "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
+            "visibility": card.visibility  # ✅ Added visibility
         })
 
     return jsonify(cards_list), 200
