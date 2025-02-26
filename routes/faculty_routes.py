@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from database.models import FacultyStaff, db
+from database.models import FacultyStaff, db, Person
 
 
 
@@ -12,10 +12,34 @@ faculty_bp = Blueprint("faculty", __name__)
 def get_facultys():
     return jsonify({"message": "Faculty routes working!"})
 
-@faculty_bp.route("/faculty_staff", methods=["GET"])  
+@faculty_bp.route("/faculty_staff", methods=["GET"])
 def get_faculty_staff():
-    faculty_staff = FacultyStaff.query.all()
-    return jsonify([f.to_dict() for f in faculty_staff])
+    faculty_staff = (
+        db.session.query(FacultyStaff, Person)
+        .join(Person, FacultyStaff.p_id == Person.p_id)
+        .all()
+    )
+
+    result = [
+        {
+            "f_id": faculty.f_id,
+            "p_id": person.p_id,
+            "name": person.name,
+            "email": person.email_pri,
+            "phone_no": person.phone_no,
+            "join_year": faculty.join_year,
+            "positions": faculty.positions,
+            "f_or_s": faculty.f_or_s,
+            "education": faculty.education,
+            "experience": faculty.experience,
+            "teaching": faculty.teaching,
+            "research": faculty.research,
+        }
+        for faculty, person in faculty_staff
+    ]
+
+    return jsonify(result)
+
 
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["GET"])  
 def get_faculty_by_id(f_id):
