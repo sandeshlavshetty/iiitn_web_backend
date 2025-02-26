@@ -69,6 +69,14 @@ def delete_media_file(media_type, media_id):
     return jsonify({"error": "Media not found"}), 404
 
 
+@media_bp.route("/<string:media_path>", methods=["GET"])
+def give_image_url(media_path):
+    if media_path :
+        print(f"public url :- {os.path.join(Config.SUPABASE_STORAGE_URL,media_path)}")
+        return os.path.join(Config.SUPABASE_STORAGE_URL,media_path)
+    
+    return None
+
 # Medai table routes
 
 
