@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database import db
-from database.models import Alumni, Student
+from database.models import Alumni, Student, Person
 
 alumni_bp = Blueprint('alumni', __name__)
 
@@ -64,3 +64,29 @@ def delete_alumni(s_id):
 
 # Register the blueprint in your Flask app (app.py)
 # app.register_blueprint(alumni_bp, url_prefix='/api')
+
+@alumni_bp.route('/alumni/details/<s_id>', methods=['GET'])
+def get_alumni_details(s_id):
+    alumni = Alumni.query.join(Student).join(Person).filter(Alumni.s_id == s_id).first()
+
+    if not alumni:
+        return jsonify({"error": "Alumni record not found"}), 404
+
+    student = alumni.student
+    person = student.person
+
+    response = {
+        "s_id": alumni.s_id,
+        "curr_org": alumni.curr_org,
+        "brief": alumni.brief,
+        "name": person.name,
+        "email_pri": person.email_pri,
+        "email_sec": person.email_sec,
+        "phone_no": person.phone_no,
+        "alt_phone_no": person.alt_phone_no,
+        "curr_address": person.curr_address,
+        "perm_address": person.perm_address,
+        "join_year": student.join_year,
+    }
+
+    return jsonify(response)
