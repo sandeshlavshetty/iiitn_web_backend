@@ -80,6 +80,7 @@ def get_card(c_id):
 
     return jsonify(card_data), 200
 
+
 @card_bp.route('/cards/<int:c_id>', methods=['PUT'])
 def edit_card(c_id):
     data = request.get_json()
