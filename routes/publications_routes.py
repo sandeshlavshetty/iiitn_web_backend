@@ -29,7 +29,6 @@ def create_publication():
         return jsonify({"error": str(e)}), 500
 
 
-# Read All Publications
 @publication_bp.route("/", methods=["GET"])
 def get_publications():
     publications = Publication.query.all()
@@ -39,10 +38,12 @@ def get_publications():
         "content": pub.content,
         "link": pub.link,
         "status": pub.status,
-        "type": pub.type
+        "type": pub.type,
+        "branch": pub.branch   # New Attribute
     } for pub in publications]
     
     return jsonify(result), 200
+
 
 # Read Single Publication by ID
 @publication_bp.route("/<int:pub_id>", methods=["GET"])
