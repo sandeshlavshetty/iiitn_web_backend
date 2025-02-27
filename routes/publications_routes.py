@@ -45,7 +45,6 @@ def get_publications():
     return jsonify(result), 200
 
 
-# Read Single Publication by ID
 @publication_bp.route("/<int:pub_id>", methods=["GET"])
 def get_publication(pub_id):
     pub = Publication.query.get(pub_id)
@@ -58,9 +57,11 @@ def get_publication(pub_id):
         "content": pub.content,
         "link": pub.link,
         "status": pub.status,
-        "type": pub.type
+        "type": pub.type,
+        "branch": pub.branch   # New Attribute
     }
     return jsonify(result), 200
+
 
 # Update Publication
 @publication_bp.route("/<int:pub_id>", methods=["PUT"])
