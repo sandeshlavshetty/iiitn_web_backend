@@ -5,7 +5,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 publication_bp = Blueprint("publication",__name__)
 
-# Create Publication
 @publication_bp.route("/", methods=["POST"])
 def create_publication():
     try:
@@ -15,7 +14,8 @@ def create_publication():
             content=data["content"],
             link=data.get("link"),  # Optional
             status=data["status"],
-            type=data["type"]
+            type=data["type"],
+            branch=data["branch"]   # New Attribute
         )
 
         db.session.add(new_pub)
@@ -27,6 +27,7 @@ def create_publication():
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
 
 # Read All Publications
 @publication_bp.route("/", methods=["GET"])
