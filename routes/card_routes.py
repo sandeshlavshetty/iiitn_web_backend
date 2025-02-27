@@ -50,7 +50,35 @@ def create_card():
 @card_bp.route('/cards/<int:c_id>', methods=['GET'])
 def get_card(c_id):
     card = get_card_by_id(db.session, c_id)
-    return jsonify(card) if card else (jsonify({"message": "Card not found"}), 404)
+    media_types = ["image", "video", "doc"]
+
+    if not card:
+        return jsonify({"message": "Card not found"}), 404
+
+    media_img = get_media(media_types[0], card.media_img_id)
+    media_vid = get_media(media_types[1], card.media_vid_id)
+    media_doc = get_media(media_types[2], card.media_doc_id)
+
+    card_data = {
+        "c_id": card.c_id,
+        "c_category": card.c_category,
+        "c_sub_category": card.c_sub_category,
+        "title": card.title,
+        "caption": card.caption,
+        "content": card.content,
+        "date": card.date.strftime('%Y-%m-%d') if card.date else None,
+        "location": card.location,
+        "media_img_path": media_img.image_path if media_img else None,
+        "media_vid_path": media_vid.video_path if media_vid else None,
+        "media_doc_path": media_doc.doc_path if media_doc else None,
+        "updated_by": card.updated_by,
+        "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
+        "added_by": card.added_by,
+        "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
+        "visibility": card.visibility  # ✅ Added visibility
+    }
+
+    return jsonify(card_data), 200
 
 @card_bp.route('/cards/<int:c_id>', methods=['PUT'])
 def edit_card(c_id):
