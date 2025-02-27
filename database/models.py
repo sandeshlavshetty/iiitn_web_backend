@@ -206,7 +206,8 @@ class Publication(db.Model):
     status = db.Column(db.String(20), nullable=False, 
                        check_constraint="status IN ('ongoing', 'completed', 'proposed')")  # Status Constraint
     type = db.Column(db.Text, nullable=False)        # Type of Publication
-    
+    branch = db.Column(db.Text, nullable=False)      # New Branch Attribute
+
     # Many-to-Many Relationship with FacultyStaff
     faculty_members = db.relationship(
         "FacultyStaff",
