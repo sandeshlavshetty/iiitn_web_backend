@@ -196,20 +196,23 @@ class Student(db.Model):
     profile_image = db.relationship("MediaImageCard", backref="student", uselist=False)
     
     
-    
 class Publication(db.Model):
     __tablename__ = 'publication'
     
     pub_id = db.Column(db.Integer, primary_key=True)  # Auto-incrementing Primary Key
-    title = db.Column(db.Text, nullable=False)  # Title is required
-    content = db.Column(db.Text)  # Optional content
-    link = db.Column(db.Text)  # Optional link to publication
-
-    # # Relationship (if needed for backref)
-    # faculty_staff = db.relationship('FacultyStaff', backref='publications', lazy=True, overlaps="faculty_research,publications")
+    title = db.Column(db.Text, nullable=False)       # Title is required
+    content = db.Column(db.Text, nullable=False)     # Content is required
+    link = db.Column(db.Text)                        # Optional link to publication
+    status = db.Column(db.String(20), nullable=False, 
+                       check_constraint="status IN ('ongoing', 'completed', 'proposed')")  # Status Constraint
+    type = db.Column(db.Text, nullable=False)        # Type of Publication
     
-     # Many-to-Many Relationship with FacultyStaff
-    faculty_members = db.relationship("FacultyStaff", secondary=faculty_publication, back_populates="publications")
+    # Many-to-Many Relationship with FacultyStaff
+    faculty_members = db.relationship(
+        "FacultyStaff",
+        secondary="faculty_publication",
+        back_populates="publications"
+    )
 
 
 
