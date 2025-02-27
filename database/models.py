@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from database import db
 from datetime import datetime
+from sqlalchemy import CheckConstraint
 
 
 
@@ -196,23 +197,28 @@ class Student(db.Model):
     profile_image = db.relationship("MediaImageCard", backref="student", uselist=False)
     
     
+
+
 class Publication(db.Model):
     __tablename__ = 'publication'
     
-    pub_id = db.Column(db.Integer, primary_key=True)  # Auto-incrementing Primary Key
-    title = db.Column(db.Text, nullable=False)       # Title is required
-    content = db.Column(db.Text, nullable=False)     # Content is required
-    link = db.Column(db.Text)                        # Optional link to publication
-    status = db.Column(db.String(20), nullable=False, 
-                       check_constraint="status IN ('ongoing', 'completed', 'proposed')")  # Status Constraint
-    type = db.Column(db.Text, nullable=False)        # Type of Publication
-    branch = db.Column(db.Text, nullable=False)      # New Branch Attribute
+    pub_id = db.Column(db.Integer, primary_key=True)  
+    title = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    link = db.Column(db.Text)
+    status = db.Column(db.String(20), nullable=False)  
+    type = db.Column(db.Text, nullable=False)
+    branch = db.Column(db.Text, nullable=False)
 
     # Many-to-Many Relationship with FacultyStaff
     faculty_members = db.relationship(
         "FacultyStaff",
         secondary="faculty_publication",
         back_populates="publications"
+    )
+
+    __table_args__ = (
+        CheckConstraint("status IN ('ongoing', 'completed', 'proposed')", name="check_publication_status"),
     )
 
 
