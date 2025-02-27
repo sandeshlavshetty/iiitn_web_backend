@@ -89,13 +89,15 @@ def update_publication(pub_id):
 @publication_bp.route("/<int:pub_id>", methods=["DELETE"])
 def delete_publication(pub_id):
     pub = Publication.query.get(pub_id)
+    
     if not pub:
         return jsonify({"error": "Publication not found"}), 404
-
+    
     try:
-        db.session.delete(pub)
+        db.session.delete(pub)  # Delete the publication
         db.session.commit()
         return jsonify({"message": "Publication deleted successfully!"}), 200
+    
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
