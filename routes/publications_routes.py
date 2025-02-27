@@ -63,7 +63,6 @@ def get_publication(pub_id):
     return jsonify(result), 200
 
 
-# Update Publication
 @publication_bp.route("/<int:pub_id>", methods=["PUT"])
 def update_publication(pub_id):
     pub = Publication.query.get(pub_id)
@@ -76,6 +75,7 @@ def update_publication(pub_id):
     pub.link = data.get("link", pub.link)
     pub.status = data.get("status", pub.status)
     pub.type = data.get("type", pub.type)
+    pub.branch = data.get("branch", pub.branch)  # New Attribute
 
     try:
         db.session.commit()
@@ -83,6 +83,7 @@ def update_publication(pub_id):
     except SQLAlchemyError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
 
 # Delete Publication
 @publication_bp.route("/<int:pub_id>", methods=["DELETE"])
