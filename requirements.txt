@@ -46,7 +46,7 @@ pyasn1==0.6.1
 pyasn1_modules==0.4.1
 pycparser==2.22
 pydot==3.0.4
-pygraphviz==1.14
+pygraphviz @ file://./packages/pygraphviz-1.x.x.tar.gz
 PyJWT==2.10.1
 pyparsing==3.2.1
 python-dotenv==1.0.1
