@@ -1,0 +1,28 @@
+# Dockerfile for Flask API with Pygraphviz + Render Deployment
+
+# Use Python 3.9 Slim Image
+FROM python:3.9-slim
+
+# Install System Dependencies
+RUN apt-get update && apt-get install -y \
+    graphviz \
+    libgraphviz-dev \
+    pkg-config \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy Project Files
+COPY . .
+
+# Install Python Dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Expose Port
+EXPOSE 5000
+
+# Start Flask API
+CMD ["python", "app.py"]
