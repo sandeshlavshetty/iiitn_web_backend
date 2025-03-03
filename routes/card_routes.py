@@ -77,7 +77,6 @@ def get_card(c_id):
         "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
         "visibility": card.visibility  # ✅ Added visibility
     }
-
     return jsonify(card_data), 200
 
 
