@@ -123,12 +123,21 @@ class Card(db.Model):
     
     
 
-# Department Table
 class Department(db.Model):
     __tablename__ = "department"
+
     d_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    dept_name = db.Column(db.String(100), nullable=False)
-    branch_name = db.Column(db.String(100), nullable=False)
+    dept_name = db.Column(db.String(100), unique=True, nullable=False)
+
+    # Relationships
+    branches = db.relationship("Branch", backref="department", cascade="all, delete", lazy=True)
+
+    def to_dict(self):
+        return {
+            "d_id": self.d_id,
+            "dept_name": self.dept_name,
+            "branches": [branch.to_dict() for branch in self.branches],
+        }
     
 
 # Many-to-Many Association Table (FacultyStaff <-> Publication)
