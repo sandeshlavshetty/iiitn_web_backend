@@ -7,6 +7,21 @@ from database.models import Department, db, Branch
 
 department_bp = Blueprint("department", __name__)
 
+
+@department_bp.route("/branch-details/<int:b_id>", methods=["GET"])
+def get_branch_details(b_id):
+    branch = Branch.query.get_or_404(b_id)
+
+    return jsonify({
+        "b_id": branch.b_id,
+        "branch_name": branch.branch_name,
+        "d_id": branch.department.d_id,
+        "dept_name": branch.department.dept_name
+    }), 200
+
+
+
+
 @department_bp.route("/departments/", methods=["POST"])
 def create_department():
     data = request.json

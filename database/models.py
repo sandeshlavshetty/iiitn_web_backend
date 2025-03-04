@@ -173,7 +173,8 @@ class FacultyStaff(db.Model):
     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
     join_year = db.Column(db.Integer, nullable=False)
     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
-    d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
+    # d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
+    b_id = db.Column(db.Integer, db.ForeignKey("branch.b_id", ondelete="CASCADE"), nullable=False)  # Only Branch ID Stored
     positions = db.Column(db.Text, nullable=False)
     f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
 
@@ -184,7 +185,8 @@ class FacultyStaff(db.Model):
 
     # Relationships
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
-    department = db.relationship("Department", backref="department_faculty_staff")
+    # department = db.relationship("Department", backref="department_faculty_staff")
+    branch = db.relationship("Branch", backref="branch_faculty_staff")
     profile_image = db.relationship("MediaImageCard", backref="media_faculty_staff", uselist=False)
     publications = db.relationship("Publication", secondary=faculty_publication, back_populates="faculty_members")
 
