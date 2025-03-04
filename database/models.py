@@ -140,6 +140,24 @@ class Department(db.Model):
         }
     
 
+class Branch(db.Model):
+    __tablename__ = "branch"
+
+    b_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    branch_name = db.Column(db.String(100), nullable=False)
+    d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"), nullable=False)
+
+    __table_args__ = (db.UniqueConstraint("d_id", "branch_name", name="uq_department_branch"),)
+
+    def to_dict(self):
+        return {
+            "b_id": self.b_id,
+            "branch_name": self.branch_name,
+            "d_id": self.d_id,
+        }
+
+
+
 # Many-to-Many Association Table (FacultyStaff <-> Publication)
 faculty_publication = db.Table(
     "faculty_publication",
