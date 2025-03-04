@@ -165,7 +165,7 @@ faculty_publication = db.Table(
     db.Column("pub_id", db.Integer, db.ForeignKey("publication.pub_id", ondelete="CASCADE"), primary_key=True)
 )
     
- class FacultyStaff(db.Model):
+class FacultyStaff(db.Model):
     __tablename__ = "faculty_staff"
 
     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
