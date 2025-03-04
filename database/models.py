@@ -196,26 +196,32 @@ class Student(db.Model):
 
 
 class Publication(db.Model):
-    __tablename__ = 'publication'
-    
-    pub_id = db.Column(db.Integer, primary_key=True)  
+    __tablename__ = "publication"
+
+    pub_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)
     link = db.Column(db.Text)
-    status = db.Column(db.String(20), nullable=False)  
+    status = db.Column(db.String(20), nullable=False)
     type = db.Column(db.Text, nullable=False)
     branch = db.Column(db.Text, nullable=False)
 
-    # Many-to-Many Relationship with FacultyStaff
-    faculty_members = db.relationship(
-        "FacultyStaff",
-        secondary="faculty_publication",
-        back_populates="publications"
-    )
+    faculty_members = db.relationship("FacultyStaff", secondary=faculty_publication, back_populates="publications")
 
     __table_args__ = (
         CheckConstraint("status IN ('ongoing', 'completed', 'proposed')", name="check_publication_status"),
     )
+
+    def to_dict(self):
+        return {
+            "pub_id": self.pub_id,
+            "title": self.title,
+            "content": self.content,
+            "link": self.link,
+            "status": self.status,
+            "type": self.type,
+            "branch": self.branch,
+        }
 
 
 
