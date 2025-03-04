@@ -148,21 +148,17 @@ class FacultyStaff(db.Model):
     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
     d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
     positions = db.Column(db.Text, nullable=False)
-    f_or_s = db.Column(db.Enum('Faculty', 'Staff', name='ForS'), nullable=False)
+    f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
 
-    education = db.Column(db.Text)  # New field
-    experience = db.Column(db.Text)  # New field
-    teaching = db.Column(db.Text)  # New field
-    research = db.Column(db.Text)  # New field
-    pub_id = db.Column(db.Integer, db.ForeignKey("publication.pub_id", ondelete="SET NULL"))
+    education = db.Column(db.Text)
+    experience = db.Column(db.Text)
+    teaching = db.Column(db.Text)
+    research = db.Column(db.Text)
 
     # Relationships
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
-    department = db.relationship("Department", backref="faculty_staff")
-    profile_image = db.relationship("MediaImageCard", backref="faculty_staff", uselist=False)
-    publication = db.relationship("Publication", backref="faculty_research", uselist=False, overlaps="publications,faculty_research")
-
-    # Many-to-Many Relationship with Publications
+    department = db.relationship("Department", backref="department_faculty_staff")
+    profile_image = db.relationship("MediaImageCard", backref="media_faculty_staff", uselist=False)
     publications = db.relationship("Publication", secondary=faculty_publication, back_populates="faculty_members")
 
     def to_dict(self):
@@ -178,8 +174,8 @@ class FacultyStaff(db.Model):
             "experience": self.experience,
             "teaching": self.teaching,
             "research": self.research,
-            "pub_id": self.pub_id
-        }    
+            "publications": [pub.to_dict() for pub in self.publications],
+        }
 
 
 
