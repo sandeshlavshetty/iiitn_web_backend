@@ -165,27 +165,25 @@ faculty_publication = db.Table(
     db.Column("pub_id", db.Integer, db.ForeignKey("publication.pub_id", ondelete="CASCADE"), primary_key=True)
 )
     
-    
-class FacultyStaff(db.Model):
+ class FacultyStaff(db.Model):
     __tablename__ = "faculty_staff"
 
     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
     join_year = db.Column(db.Integer, nullable=False)
     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
-    # d_id = db.Column(db.Integer, db.ForeignKey("department.d_id", ondelete="CASCADE"))
-    b_id = db.Column(db.Integer, db.ForeignKey("branch.b_id", ondelete="CASCADE"), nullable=False)  # Only Branch ID Stored
+    b_id = db.Column(db.Integer, db.ForeignKey("branch.b_id", ondelete="CASCADE"), nullable=False)
     positions = db.Column(db.Text, nullable=False)
     f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
 
     education = db.Column(db.Text)
-    experience = db.Column(db.Text)
+    experience = db.Column(db.Integer)  # Changed to Integer
     teaching = db.Column(db.Text)
     research = db.Column(db.Text)
+    content = db.Column(db.Text)  # Added missing field from schema
 
     # Relationships
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
-    # department = db.relationship("Department", backref="department_faculty_staff")
     branch = db.relationship("Branch", backref="branch_faculty_staff")
     profile_image = db.relationship("MediaImageCard", backref="media_faculty_staff", uselist=False)
     publications = db.relationship("Publication", secondary=faculty_publication, back_populates="faculty_members")
@@ -196,13 +194,15 @@ class FacultyStaff(db.Model):
             "p_id": self.p_id,
             "join_year": self.join_year,
             "media_img_id": self.media_img_id,
-            "d_id": self.d_id,
+            "b_id": self.b_id,
+            "branch": self.branch.to_dict() if self.branch else None,
             "positions": self.positions,
             "f_or_s": self.f_or_s,
             "education": self.education,
             "experience": self.experience,
             "teaching": self.teaching,
             "research": self.research,
+            "content": self.content,
             "publications": [pub.to_dict() for pub in self.publications],
         }
 
