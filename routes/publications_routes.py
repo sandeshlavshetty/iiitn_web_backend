@@ -4,7 +4,7 @@ from database.models import Publication
 from sqlalchemy.exc import SQLAlchemyError
 
 publication_bp = Blueprint("publication",__name__)
-
+# Create Publication Route
 @publication_bp.route("/", methods=["POST"])
 def create_publication():
     try:
@@ -12,10 +12,12 @@ def create_publication():
         new_pub = Publication(
             title=data["title"],
             content=data["content"],
-            link=data.get("link"),  # Optional
+            link=data.get("link"),  # Optional Field
             status=data["status"],
             type=data["type"],
-            branch=data["branch"]   # New Attribute
+            branch=data["branch"],   # New Attribute
+            lead_name=data.get("lead_name"),  # ✅ New Attribute (Optional)
+            published_in=data.get("published_in")  # ✅ New Attribute (Optional)
         )
 
         db.session.add(new_pub)
@@ -29,6 +31,7 @@ def create_publication():
         return jsonify({"error": str(e)}), 500
 
 
+# Get All Publications Route
 @publication_bp.route("/", methods=["GET"])
 def get_publications():
     publications = Publication.query.all()
@@ -39,12 +42,15 @@ def get_publications():
         "link": pub.link,
         "status": pub.status,
         "type": pub.type,
-        "branch": pub.branch   # New Attribute
+        "branch": pub.branch,  # New Attribute
+        "lead_name": pub.lead_name,  # ✅ New Attribute
+        "published_in": pub.published_in  # ✅ New Attribute
     } for pub in publications]
     
     return jsonify(result), 200
 
 
+# Get Single Publication by ID
 @publication_bp.route("/<int:pub_id>", methods=["GET"])
 def get_publication(pub_id):
     pub = Publication.query.get(pub_id)
@@ -58,11 +64,14 @@ def get_publication(pub_id):
         "link": pub.link,
         "status": pub.status,
         "type": pub.type,
-        "branch": pub.branch   # New Attribute
+        "branch": pub.branch,  # New Attribute
+        "lead_name": pub.lead_name,  # ✅ New Attribute
+        "published_in": pub.published_in  # ✅ New Attribute
     }
     return jsonify(result), 200
 
 
+# Update Publication Route
 @publication_bp.route("/<int:pub_id>", methods=["PUT"])
 def update_publication(pub_id):
     pub = Publication.query.get(pub_id)
@@ -76,6 +85,8 @@ def update_publication(pub_id):
     pub.status = data.get("status", pub.status)
     pub.type = data.get("type", pub.type)
     pub.branch = data.get("branch", pub.branch)  # New Attribute
+    pub.lead_name = data.get("lead_name", pub.lead_name)  # ✅ New Attribute
+    pub.published_in = data.get("published_in", pub.published_in)  # ✅ New Attribute
 
     try:
         db.session.commit()
@@ -85,7 +96,7 @@ def update_publication(pub_id):
         return jsonify({"error": str(e)}), 500
 
 
-# Delete Publication
+# Delete Publication Route
 @publication_bp.route("/<int:pub_id>", methods=["DELETE"])
 def delete_publication(pub_id):
     pub = Publication.query.get(pub_id)
