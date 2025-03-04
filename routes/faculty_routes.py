@@ -3,8 +3,6 @@ from database.models import FacultyStaff, db, Person, Branch
 
 
 
-from flask import Blueprint, jsonify, request
-from database.models import FacultyStaff, db
 
 faculty_bp = Blueprint("faculty", __name__)
 
