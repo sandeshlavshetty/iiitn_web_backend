@@ -62,7 +62,7 @@ def create_faculty_staff():
         experience=data.get("experience"),
         teaching=data.get("teaching"),
         research=data.get("research"),
-        pub_id=data.get("pub_id")
+       
     )
     db.session.add(new_faculty_staff)
     db.session.commit()
@@ -85,7 +85,7 @@ def update_faculty_staff(f_id):
     faculty_staff.experience = data.get("experience", faculty_staff.experience)
     faculty_staff.teaching = data.get("teaching", faculty_staff.teaching)
     faculty_staff.research = data.get("research", faculty_staff.research)
-    faculty_staff.pub_id = data.get("pub_id", faculty_staff.pub_id)
+    
 
     db.session.commit()
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
