@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from database import db
 from datetime import datetime
-from sqlalchemy import CheckConstraint
+from sqlalchemy import CheckConstraint, Enum
 
 
 
@@ -194,7 +194,6 @@ class Student(db.Model):
     
     
 
-
 class Publication(db.Model):
     __tablename__ = "publication"
 
@@ -204,7 +203,13 @@ class Publication(db.Model):
     link = db.Column(db.Text)
     status = db.Column(db.String(20), nullable=False)
     type = db.Column(db.Text, nullable=False)
-    branch = db.Column(db.Text, nullable=False)
+    
+    # Updated branch to ENUM
+    branch = db.Column(Enum("CSE", "ECE", "BS", name="branch_enum"), nullable=False)
+
+    # New attributes
+    lead_name = db.Column(db.String(255), nullable=True)
+    published_in = db.Column(db.String(255), nullable=True)
 
     faculty_members = db.relationship("FacultyStaff", secondary=faculty_publication, back_populates="publications")
 
@@ -221,8 +226,9 @@ class Publication(db.Model):
             "status": self.status,
             "type": self.type,
             "branch": self.branch,
+            "lead_name": self.lead_name,
+            "published_in": self.published_in,
         }
-
 
 
 class Alumni(db.Model):
