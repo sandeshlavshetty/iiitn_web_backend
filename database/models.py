@@ -205,7 +205,7 @@ class Publication(db.Model):
     type = db.Column(db.Text, nullable=False)
     
     # Updated branch to ENUM
-    branch = db.Column(Enum("CSE", "ECE", "BS", name="branch_enum"), nullable=False)
+    branch_enum = db.Column(Enum("CSE", "ECE", "BS", name="branch_enum"), nullable=False)
 
     # New attributes
     lead_name = db.Column(db.String(255), nullable=True)
@@ -225,7 +225,7 @@ class Publication(db.Model):
             "link": self.link,
             "status": self.status,
             "type": self.type,
-            "branch": self.branch,
+            "branch": self.branch_enum,
             "lead_name": self.lead_name,
             "published_in": self.published_in,
         }
