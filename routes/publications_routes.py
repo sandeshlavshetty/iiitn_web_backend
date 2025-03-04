@@ -15,7 +15,7 @@ def create_publication():
             link=data.get("link"),  # Optional Field
             status=data["status"],
             type=data["type"],
-            branch=data["branch_enum"],   # New Attribute
+            branch_enum=data["branch_enum"],   # New Attribute
             lead_name=data.get("lead_name"),  # ✅ New Attribute (Optional)
             published_in=data.get("published_in")  # ✅ New Attribute (Optional)
         )
@@ -42,7 +42,7 @@ def get_publications():
         "link": pub.link,
         "status": pub.status,
         "type": pub.type,
-        "branch": pub.branch_enum,  # New Attribute
+        "branch_enum": pub.branch_enum,  # New Attribute
         "lead_name": pub.lead_name,  # ✅ New Attribute
         "published_in": pub.published_in  # ✅ New Attribute
     } for pub in publications]
@@ -64,7 +64,7 @@ def get_publication(pub_id):
         "link": pub.link,
         "status": pub.status,
         "type": pub.type,
-        "branch": pub.branch_enum,  # New Attribute
+        "branch_enum": pub.branch_enum,  # New Attribute
         "lead_name": pub.lead_name,  # ✅ New Attribute
         "published_in": pub.published_in  # ✅ New Attribute
     }
@@ -84,7 +84,7 @@ def update_publication(pub_id):
     pub.link = data.get("link", pub.link)
     pub.status = data.get("status", pub.status)
     pub.type = data.get("type", pub.type)
-    pub.branch = data.get("branch", pub.branch_enum)  # New Attribute
+    pub.branch_enum = data.get("branch_enum", pub.branch_enum)  # New Attribute
     pub.lead_name = data.get("lead_name", pub.lead_name)  # ✅ New Attribute
     pub.published_in = data.get("published_in", pub.published_in)  # ✅ New Attribute
 
