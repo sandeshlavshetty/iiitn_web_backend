@@ -1,14 +1,15 @@
 from flask import Blueprint, jsonify, request
-from database.models import FacultyStaff, db, Person, Branch
-
-
-
+from database.models import FacultyStaff, db, Person, Branch, MediaImageCard
+from config import Config
+import os
 
 faculty_bp = Blueprint("faculty", __name__)
 
 @faculty_bp.route("/", methods=["GET"])
 def get_facultys():
     return jsonify({"message": "Faculty routes working!"})
+
+
 @faculty_bp.route("/faculty_staff", methods=["GET"])
 def get_faculty_staff():
     faculty_staff = (
@@ -37,20 +38,21 @@ def get_faculty_staff():
             "branch_name": branch.branch_name,
             "d_id": branch.department.d_id,
             "dept_name": branch.department.dept_name,
-            "image_path": media.image_path if media else None
+            "content": faculty.content,
+            "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
         }
         for faculty, person, branch, media in faculty_staff
     ]
 
     return jsonify(result)
 
-
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["GET"])
 def get_faculty_by_id(f_id):
     faculty_staff = (
-        db.session.query(FacultyStaff, Person, Branch)
+        db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
         .join(Branch, FacultyStaff.b_id == Branch.b_id)
+        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)
         .filter(FacultyStaff.f_id == f_id)
         .first()
     )
@@ -58,7 +60,7 @@ def get_faculty_by_id(f_id):
     if not faculty_staff:
         return jsonify({"message": "Faculty/Staff not found"}), 404
 
-    faculty, person, branch = faculty_staff
+    faculty, person, branch, media = faculty_staff
 
     return jsonify({
         "f_id": faculty.f_id,
@@ -76,7 +78,9 @@ def get_faculty_by_id(f_id):
         "b_id": branch.b_id,
         "branch_name": branch.branch_name,
         "d_id": branch.department.d_id,
-        "dept_name": branch.department.dept_name
+        "dept_name": branch.department.dept_name,
+        "content": faculty.content,
+        "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
     }), 200
 
 @faculty_bp.route("/faculty_staff", methods=["POST"])
@@ -93,6 +97,7 @@ def create_faculty_staff():
         experience=data.get("experience"),
         teaching=data.get("teaching"),
         research=data.get("research"),
+        content = data.get("content")
     )
 
     db.session.add(new_faculty_staff)
