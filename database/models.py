@@ -175,7 +175,6 @@ class FacultyStaff(db.Model):
     b_id = db.Column(db.Integer, db.ForeignKey("branch.b_id", ondelete="CASCADE"), nullable=False)
     positions = db.Column(db.Text, nullable=False)
     f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
-
     education = db.Column(db.Text)
     experience = db.Column(db.Integer)  # Changed to Integer
     teaching = db.Column(db.Text)
