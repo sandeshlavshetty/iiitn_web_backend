@@ -9,13 +9,13 @@ faculty_bp = Blueprint("faculty", __name__)
 @faculty_bp.route("/", methods=["GET"])
 def get_facultys():
     return jsonify({"message": "Faculty routes working!"})
-
 @faculty_bp.route("/faculty_staff", methods=["GET"])
 def get_faculty_staff():
     faculty_staff = (
-        db.session.query(FacultyStaff, Person, Branch)
+        db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
         .join(Branch, FacultyStaff.b_id == Branch.b_id)
+        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)  # Outer join to handle null images
         .all()
     )
 
@@ -36,12 +36,14 @@ def get_faculty_staff():
             "b_id": branch.b_id,
             "branch_name": branch.branch_name,
             "d_id": branch.department.d_id,
-            "dept_name": branch.department.dept_name
+            "dept_name": branch.department.dept_name,
+            "image_path": media.image_path if media else None
         }
-        for faculty, person, branch in faculty_staff
+        for faculty, person, branch, media in faculty_staff
     ]
 
     return jsonify(result)
+
 
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["GET"])
 def get_faculty_by_id(f_id):
