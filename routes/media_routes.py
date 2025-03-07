@@ -144,7 +144,7 @@ def fetch_media_by_id(m_id):
         'media_vid_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_vid_id)),
         'media_doc_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_doc_id)),
         "preference": media.preference,
-        "expiry_date" : media.expiry_date
+        "expiry_date" : media.expiry_date,
         "date" : media.date
     }), 200
 
