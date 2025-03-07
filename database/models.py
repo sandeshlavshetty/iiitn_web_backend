@@ -75,6 +75,9 @@ class Media(db.Model):
     media_vid_id = db.Column(db.Integer, db.ForeignKey('media_video_card.media_vid_id', ondelete='SET NULL'))
     media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))
 
+    preference = db.Column(db.Integer, default=0)  # Lower value indicates higher priority
+    expiry_date = db.Column(db.Date)
+
 
 
 class Card(db.Model):
@@ -120,7 +123,9 @@ class Card(db.Model):
             "updated_time": self.updated_time.strftime('%Y-%m-%d %H:%M:%S') if self.updated_time else None,
             "added_by": self.added_by,
             "added_time": self.added_time.strftime('%Y-%m-%d %H:%M:%S') if self.added_time else None,
-            "visibility": self.visibility
+            "visibility": self.visibility,
+            "preference": self.preference,
+            "expiry_date": self.expiry_date.strftime('%Y-%m-%d') if self.expiry_date else None
         }
 
     
