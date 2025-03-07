@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 import os
 from utils.file_helper import save_file,delete_file,update_file
-from database.db_operations import add_media, get_media, delete_media_type, create_media,get_all_media,get_media_by_id,update_media,delete_media
+from database.db_operations import add_media, get_media, delete_media_type, create_media,get_all_media,get_media_by_id,update_media,delete_media,get_media_path
 
 # from flask_jwt_extended import jwt_required
 from database.models import Media  # Ensure Media model is imported
@@ -118,9 +118,9 @@ def fetch_all_media():
         'updated_time': media.updated_time,
         'added_by': media.added_by,
         'added_time': media.added_time,
-        'media_img_id': media.media_img_id,
-        'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id,
+        'media_img_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_img_id)),
+        'media_vid_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_vid_id)),
+        'media_doc_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_doc_id)),
         "preference": media.preference,
         "expiry_date" : media.expiry_date,
         'date' : media.date
@@ -140,9 +140,9 @@ def fetch_media_by_id(m_id):
         'updated_time': media.updated_time,
         'added_by': media.added_by,
         'added_time': media.added_time,
-        'media_img_id': media.media_img_id,
-        'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id,
+        'media_img_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_img_id)),
+        'media_vid_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_vid_id)),
+        'media_doc_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_doc_id)),
         "preference": media.preference,
         "expiry_date" : media.expiry_date
         "date" : media.date
@@ -177,9 +177,9 @@ def get_media_by_category(category):
         'updated_time': media.updated_time,
         'added_by': media.added_by,
         'added_time': media.added_time,
-        'media_img_id': media.media_img_id,
-        'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id,
+        'media_img_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_img_id)),
+        'media_vid_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_vid_id)),
+        'media_doc_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_doc_id)),
         "preference": media.preference,
         "expiry_date" : media.expiry_date,
         "date":media.date
@@ -198,9 +198,9 @@ def get_media_by_sub_category(sub_category):
         'updated_time': media.updated_time,
         'added_by': media.added_by,
         'added_time': media.added_time,
-        'media_img_id': media.media_img_id,
-        'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id,
+        'media_img_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_img_id)),
+        'media_vid_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_vid_id)),
+        'media_doc_id': os.path.join(Config.SUPABASE_STORAGE_URL,get_media_path(media.media_doc_id)),
         "preference": media.preference,
         "expiry_date" : media.expiry_date,
         "date":media.date
