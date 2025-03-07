@@ -34,7 +34,9 @@ def get_cards_table():
         "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
         "added_by": card.added_by,
         "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
-        "visibility": card.visibility  # ✅ Added visibility
+        "visibility": card.visibility,
+        "preference": card.preference,
+        "expiry_date" : card.expiry_date 
     } for card in cards]
     
     return jsonify(cards_list), 200
@@ -75,7 +77,9 @@ def get_card(c_id):
         "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
         "added_by": card.added_by,
         "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
-        "visibility": card.visibility  # ✅ Added visibility
+        "visibility": card.visibility,
+        "preference": card.preference,
+        "expiry_date" : card.expiry_date 
     }
     return jsonify(card_data), 200
 
@@ -124,7 +128,9 @@ def get_cards_by_category(category):
             "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
             "added_by": card.added_by,
             "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
-            "visibility": card.visibility  # ✅ Added visibility
+            "visibility": card.visibility,
+            "preference": card.preference,
+            "expiry_date" : card.expiry_date 
         })
 
     return jsonify(cards_list), 200
@@ -153,7 +159,9 @@ def get_cards_by_sub_category(sub_category):
         "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
         "added_by": card.added_by,
         "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
-         "visibility": card.visibility  # ✅ Added visibility
+         "visibility": card.visibility,
+         "preference": card.preference,
+        "expiry_date" : card.expiry_date 
     } for card in cards]
     
     return jsonify(cards_list), 200
@@ -211,7 +219,9 @@ def get_grouped_cards_by_category(category):
             "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
             "added_by": card.added_by,
             "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
-            "visibility": card.visibility
+            "visibility": card.visibility,
+            "preference": card.preference,
+            "expiry_date" : card.expiry_date 
         })
 
     return jsonify(grouped_cards), 200

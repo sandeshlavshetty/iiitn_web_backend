@@ -74,9 +74,9 @@ class Media(db.Model):
     media_img_id = db.Column(db.Integer, db.ForeignKey('media_image_card.media_img_id', ondelete='SET NULL'))
     media_vid_id = db.Column(db.Integer, db.ForeignKey('media_video_card.media_vid_id', ondelete='SET NULL'))
     media_doc_id = db.Column(db.Integer, db.ForeignKey('media_doc_card.media_doc_id', ondelete='SET NULL'))
-
     preference = db.Column(db.Integer, default=0)  # Lower value indicates higher priority
     expiry_date = db.Column(db.Date)
+    date = db.Column(db.Date)
 
 
 
@@ -175,7 +175,7 @@ faculty_publication = db.Table(
     
 class FacultyStaff(db.Model):
     __tablename__ = "faculty_staff"
-
+    
     f_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     p_id = db.Column(db.Integer, db.ForeignKey("person.p_id", ondelete="CASCADE"), unique=True)
     join_year = db.Column(db.Integer, nullable=False)

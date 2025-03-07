@@ -120,7 +120,10 @@ def fetch_all_media():
         'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id
+        'media_doc_id': media.media_doc_id,
+        "preference": media.preference,
+        "expiry_date" : media.expiry_date,
+        'date' : media.date
     } for media in media_list]), 200
 
 @media_bp.route('/media/<int:m_id>', methods=['GET'])
@@ -139,7 +142,10 @@ def fetch_media_by_id(m_id):
         'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id
+        'media_doc_id': media.media_doc_id,
+        "preference": media.preference,
+        "expiry_date" : media.expiry_date
+        "date" : media.date
     }), 200
 
 @media_bp.route('/media/<int:m_id>', methods=['PUT'])
@@ -173,7 +179,10 @@ def get_media_by_category(category):
         'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id
+        'media_doc_id': media.media_doc_id,
+        "preference": media.preference,
+        "expiry_date" : media.expiry_date,
+        "date":media.date
     } for media in media_list]), 200
 
 @media_bp.route('/media/sub_category/<string:sub_category>', methods=['GET'])
@@ -191,5 +200,8 @@ def get_media_by_sub_category(sub_category):
         'added_time': media.added_time,
         'media_img_id': media.media_img_id,
         'media_vid_id': media.media_vid_id,
-        'media_doc_id': media.media_doc_id
+        'media_doc_id': media.media_doc_id,
+        "preference": media.preference,
+        "expiry_date" : media.expiry_date,
+        "date":media.date
     } for media in media_list]), 200

@@ -172,7 +172,10 @@ def create_media(data):
         added_by=data.get('added_by'),
         media_img_id=data.get('media_img_id'),
         media_vid_id=data.get('media_vid_id'),
-        media_doc_id=data.get('media_doc_id')
+        media_doc_id=data.get('media_doc_id'),
+        preference=data.get('preference'),
+        expiry_date=data.get('expiry_date'),
+        date= data.get('date')
     )
     db.session.add(new_media)
     db.session.commit()
@@ -195,6 +198,9 @@ def update_media(m_id, data):
     media.media_img_id = data.get('media_img_id', media.media_img_id)
     media.media_vid_id = data.get('media_vid_id', media.media_vid_id)
     media.media_doc_id = data.get('media_doc_id', media.media_doc_id)
+    media.preference=data.get('preference',media.preference)
+    media.expiry_date=data.get('expiry_date',media.expiry_date)
+    media.date= data.get('date',media.date)
     db.session.commit()
     return media
 
