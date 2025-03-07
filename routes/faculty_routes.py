@@ -4,7 +4,7 @@ from config import Config
 import os
 
 faculty_bp = Blueprint("faculty", __name__)
-
+ 
 @faculty_bp.route("/", methods=["GET"])
 def get_facultys():
     return jsonify({"message": "Faculty routes working!"})

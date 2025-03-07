@@ -98,6 +98,9 @@ class Card(db.Model):
 
     # New column for visibility (default is True)
     visibility = db.Column(db.Boolean, default=True, nullable=False)
+    # New Columns
+    preference = db.Column(db.Integer, default=0)  # Lower value indicates higher priority
+    expiry_date = db.Column(db.Date)
 
     def to_dict(self):
         """Convert Card object to dictionary format for JSON responses."""
