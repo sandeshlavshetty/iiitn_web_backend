@@ -8,14 +8,16 @@ from utils.file_helper import delete_file
 # these are for img,vdeo,doc media uploads 
 
 
-def add_media(file_name, file_path, media_type):
+
+def add_media(file_name, file_path):
     """Add media entry to the respective table."""
-    if media_type == "image":
+    file_ext = file_name.split('.')[-1].lower()
+    if file_ext in ["jpg", "jpeg", "png", "gif", "webp"]:
         media = MediaImageCard(image_file_name=file_name, image_path=file_path)
-    elif media_type == "video":
+    elif file_ext in ["mp4", "mov", "avi", "mkv"]:
         media = MediaVideoCard(video_file_name=file_name, video_path=file_path)
-    elif media_type == "doc":
-        media = MediaDocCard(doc_file_name=file_name, doc_path=file_path)
+    elif file_ext in ["pdf", "doc", "docx", "txt"]:
+         media = MediaDocCard(doc_file_name=file_name, doc_path=file_path)
     else:
         return None
 
@@ -23,20 +25,30 @@ def add_media(file_name, file_path, media_type):
     db.session.commit()
     return media
 
-def get_media(media_type, media_id):
-    """Fetch media details by ID."""
-    if media_type == "image":
-        return MediaImageCard.query.get(media_id)
-    elif media_type == "video":
-        if media_id:
-            return MediaVideoCard.query.get(media_id)
-    elif media_type == "doc":
-        if media_id:
-            return MediaDocCard.query.get(media_id)
-    return None
+# def get_media(media_type, media_id):
+#     """Fetch media details by ID."""
+#     if media_type == "image":
+#         return MediaImageCard.query.get(media_id)
+#     elif media_type == "video":
+#         if media_id:
+#             return MediaVideoCard.query.get(media_id)
+#     elif media_type == "doc":
+#         if media_id:
+#             return MediaDocCard.query.get(media_id)
+#     return None
 
-def delete_media_type(media_type, media_id):
-    media = get_media(media_type, media_id)
+def get_media(media_id):
+    """Fetch media details by ID from any media table."""
+    media = MediaImageCard.query.get(media_id) or \
+            MediaVideoCard.query.get(media_id) or \
+            MediaDocCard.query.get(media_id)
+    
+    return media
+
+
+
+def delete_media_type(media_id):
+    media = get_media(media_id)
     if not media:
         return False  # Media does not exist in the database
     

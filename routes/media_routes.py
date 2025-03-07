@@ -22,7 +22,7 @@ def upload_file():
         return jsonify({"error": "File and media_type are required"}), 400
     print("supabase upload route is called")
     file = request.files["file"]
-    media_type = request.form["media_type"]
+    
 
     file_path = save_file(file)  # Store locally
    
@@ -30,10 +30,19 @@ def upload_file():
         return jsonify({"error": "Invalid file type"}), 400
 
     # print(f"File name :- {file.filename}")
-    media_entry = add_media(file.filename, file_path, media_type)
+    media_entry = add_media(file.filename, file_path)
     if not media_entry:
         return jsonify({"error": "Invalid media type"}), 400
 
+    file_name = file.filename
+    file_ext = file_name.split('.')[-1].lower()
+    if file_ext in ["jpg", "jpeg", "png", "gif", "webp"]:
+        media_type ="image"
+    elif file_ext in ["mp4", "mov", "avi", "mkv"]:
+        media_type = "video"
+    else:
+        media_type = "doc"
+    
     return jsonify({
         "message": "File uploaded successfully",
         "media_id": media_entry.media_img_id if media_type == "image" else
@@ -43,26 +52,36 @@ def upload_file():
     })
 
 
-@media_bp.route("/<media_type>/<int:media_id>", methods=["GET"])
-def get_media_details(media_type, media_id):
-    media = get_media(media_type, media_id)
+@media_bp.route("/<int:media_id>", methods=["GET"])
+def get_media_details(media_id):
+    media = get_media(media_id)
     if not media:
         return jsonify({"error": "Media not found"}), 404
-    return jsonify({
-        "media_id": media.media_img_id if media_type == "image" else
-                    media.media_vid_id if media_type == "video" else
-                    media.media_doc_id,
-        "file_name": media.image_file_name if media_type == "image" else
+    else :
+        file_name = media.filename
+        file_ext = file_name.split('.')[-1].lower()
+        if file_ext in ["jpg", "jpeg", "png", "gif", "webp"]:
+           media_type ="image"
+        elif file_ext in ["mp4", "mov", "avi", "mkv"]:
+           media_type = "video"
+        else:
+            media_type = "doc"
+           
+        return jsonify({
+            "media_id": media.media_img_id if media_type == "image" else
+                     media.media_vid_id if media_type == "video" else
+                     media.media_doc_id,
+            "file_name": media.image_file_name if media_type == "image" else
                      media.video_file_name if media_type == "video" else
                      media.doc_file_name,
-        "file_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media_type == "image" else
-                     os.path.join(Config.SUPABASE_STORAGE_URL,media.video_path) if media_type == "video" else
-                     os.path.join(Config.SUPABASE_STORAGE_URL,media.doc_path)
-    })
+            "file_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media_type == "image" else
+                        os.path.join(Config.SUPABASE_STORAGE_URL,media.video_path) if media_type == "video" else
+                        os.path.join(Config.SUPABASE_STORAGE_URL,media.doc_path)
+            })
 
-@media_bp.route("/<media_type>/<int:media_id>", methods=["DELETE"])
-def delete_media_file(media_type, media_id):
-    result = delete_media_type(media_type, media_id)
+@media_bp.route("/<int:media_id>", methods=["DELETE"])
+def delete_media_file(media_id):
+    result = delete_media_type(media_id)
     if result:
         return jsonify({"message": "Media deleted successfully"})
     
