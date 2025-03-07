@@ -61,6 +61,15 @@ def delete_media_type(media_id):
     db.session.commit()
     return True
 
+def get_media_path(media_id):
+    media = MediaImageCard.query.get(media_id) or \
+            MediaVideoCard.query.get(media_id) or \
+            MediaDocCard.query.get(media_id)
+    
+    if media:
+        return media.image_path if media else None
+    return None
+
 
 
 # this is for social media
