@@ -172,6 +172,7 @@ def get_media_by_category(category):
     return jsonify([{ 
         'm_id': media.m_id, 
         'm_category': media.m_category, 
+        'm_sub_category': media.m_sub_category,
         'title': media.title,
         'updated_by': media.updated_by,
         'updated_time': media.updated_time,
