@@ -222,3 +222,20 @@ def get_grouped_cards_by_category(category):
         })
 
     return jsonify(grouped_cards), 200
+
+
+@card_bp.route('/cards/categories', methods=['GET'])
+def get_unique_categories():
+    """Fetch unique categories with their associated sub-categories."""
+    cards = Card.query.with_entities(Card.c_category, Card.c_sub_category).distinct().all()
+
+    category_dict = {}
+    for category, sub_category in cards:
+        if category not in category_dict:
+            category_dict[category] = set()
+        category_dict[category].add(sub_category)
+
+    # Convert sets to lists for JSON serialization
+    result = {category: list(sub_categories) for category, sub_categories in category_dict.items()}
+
+    return jsonify(result), 200
