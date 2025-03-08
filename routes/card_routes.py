@@ -225,7 +225,7 @@ def get_grouped_cards_by_category(category):
 
 
 @card_bp.route('/cards/categories', methods=['GET'])
-def get_unique_categories():
+def get_unique_categories_subcategories():
     """Fetch unique categories with their associated sub-categories."""
     cards = Card.query.with_entities(Card.c_category, Card.c_sub_category).distinct().all()
 
