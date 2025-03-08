@@ -248,3 +248,12 @@ def get_unique_categories():
     unique_categories = [category[0] for category in categories]
     
     return jsonify({"categories": unique_categories}), 200
+
+
+@card_bp.route('/cards/unique-sub-categories', methods=['GET'])
+def get_unique_sub_categories():
+    """Fetch only unique sub-categories."""
+    sub_categories = db.session.query(Card.c_sub_category).distinct().all()
+    unique_sub_categories = [sub_category[0] for sub_category in sub_categories]
+    
+    return jsonify({"sub_categories": unique_sub_categories}), 200
