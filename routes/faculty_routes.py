@@ -136,3 +136,28 @@ def delete_faculty_staff(f_id):
     db.session.delete(faculty_staff)
     db.session.commit()
     return jsonify({"message": "Faculty/Staff deleted successfully"}), 200
+
+
+@faculty_bp.route("/faculty_staff/placement_officers", methods=["GET"])
+def get_placement_officers():
+    placement_officers = (
+        db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
+        .join(Person, FacultyStaff.p_id == Person.p_id)
+        .join(Branch, FacultyStaff.b_id == Branch.b_id)
+        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)
+        .filter(FacultyStaff.positions.contains(["Placement Officer"]))  # Filtering by position
+        .all()
+    )
+
+    result = [
+        {
+            "name": person.name,
+            "email": person.email_pri,
+            "phone_no": person.phone_no,
+            "positions": faculty.positions,
+            "image_path": os.path.join(Config.SUPABASE_STORAGE_URL, media.image_path) if media else None
+        }
+        for faculty, person, branch, media in placement_officers
+    ]
+
+    return jsonify(result)
