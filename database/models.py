@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from database import db
 from datetime import datetime
 from sqlalchemy import CheckConstraint, Enum
-
+from sqlalchemy.dialects.postgresql import ARRAY
 
 
 
@@ -181,7 +181,7 @@ class FacultyStaff(db.Model):
     join_year = db.Column(db.Integer, nullable=False)
     media_img_id = db.Column(db.Integer, db.ForeignKey("media_image_card.media_img_id", ondelete="SET NULL"))
     b_id = db.Column(db.Integer, db.ForeignKey("branch.b_id", ondelete="CASCADE"), nullable=False)
-    positions = db.Column(db.Text, nullable=False)
+    positions = db.Column(ARRAY(db.String), nullable=False)  # Store positions as an array
     f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
     education = db.Column(db.Text)
     experience = db.Column(db.Integer)  # Changed to Integer
