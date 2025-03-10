@@ -9,8 +9,7 @@ from config import Config
 from routes.student_routes import student_bp
 from flask_cors import CORS  # Import CORS
 from database import init_db
-
- 
+  
 load_dotenv()  # Load environment variables
 
 app = Flask(__name__)

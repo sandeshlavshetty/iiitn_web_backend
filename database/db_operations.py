@@ -74,9 +74,6 @@ def get_media_path(media_id, media_type):
     else:
         return None
 
-    
-
-
 
 
 # this is for social media

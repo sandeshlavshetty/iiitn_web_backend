@@ -141,3 +141,20 @@ def delete_faculty_staff(f_id):
     db.session.commit()
     return jsonify({"message": "Faculty/Staff deleted successfully"}), 200
 
+@faculty_bp.route("/faculty_staff/<int:f_id>", methods=["PATCH"])
+def patch_faculty_staff(f_id):
+    data = request.json
+    faculty_staff = FacultyStaff.query.get(f_id)
+
+    if not faculty_staff:
+        return jsonify({"message": "Faculty/Staff not found"}), 404
+
+    # Update only the fields present in the request
+    for key, value in data.items():
+        if hasattr(faculty_staff, key):
+            setattr(faculty_staff, key, value)
+
+    db.session.commit()
+    return jsonify({"message": "Faculty/Staff updated successfully"}), 200
+
+
