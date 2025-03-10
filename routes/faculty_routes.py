@@ -157,8 +157,8 @@ def patch_faculty_staff(f_id):
     db.session.commit()
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
 
-@faculty_bp.route("/faculty_staff/default", methods=["POST"])
-def create_faculty_staff():
+@faculty_bp.route("/faculty_staff/default", methods=["PATCH"])
+def create_default_faculty_staff():
     data = request.json
 
     # Create a new FacultyStaff entry with required fields and others set to None
