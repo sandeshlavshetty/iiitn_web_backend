@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
-    get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
+    get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies,get_jwt
 )
 
 from database.models import Person
@@ -47,8 +47,12 @@ def login():
 @auth_bp.route("/protected", methods=["GET"])
 @jwt_required()
 def protected():
-    user = get_jwt_identity()
-    return jsonify({"message": f"Welcome, {user['email']}!"}), 200
+    user_email = get_jwt_identity()
+    claims = get_jwt()
+    return jsonify({
+        "message": f"Welcome, {user_email}!",
+        "role": claims["role"]
+    }), 200
 
 @auth_bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
