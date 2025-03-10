@@ -157,4 +157,33 @@ def patch_faculty_staff(f_id):
     db.session.commit()
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
 
+@faculty_bp.route("/faculty_staff/default", methods=["POST"])
+def create_faculty_staff():
+    data = request.json
+
+    # Create a new FacultyStaff entry with required fields and others set to None
+    new_faculty_staff = FacultyStaff(
+        p_id=data.get("p_id"),  # Required as it's unique and foreign key
+        join_year=data.get("join_year", 2024),  # Default join year if not provided
+        media_img_id=None,
+        b_id=data.get("b_id"),  # Required foreign key
+        positions=data.get("positions", ""),  # Default to empty string
+        f_or_s=data.get("f_or_s", "Faculty"),  # Defaulting to "Faculty"
+        education=None,
+        experience=None,
+        teaching=None,
+        research=None,
+        content=None,
+        preference=data.get("preference", 0)  # Default priority
+    )
+
+    db.session.add(new_faculty_staff)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Faculty/Staff created successfully",
+        "faculty_staff": new_faculty_staff.to_dict()
+    }), 201
+
+
 
