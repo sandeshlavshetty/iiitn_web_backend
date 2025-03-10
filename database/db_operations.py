@@ -61,14 +61,18 @@ def delete_media_type(media_id):
     db.session.commit()
     return True
 
-def get_media_path(media_id):
-    media = MediaImageCard.query.get(media_id) or \
-            MediaVideoCard.query.get(media_id) or \
-            MediaDocCard.query.get(media_id)
-    
-    if media:
-        return media.image_path if media else None
-    return None
+def get_media_path(media_id, media_type):
+    if media_type == "image":
+        media = MediaImageCard.query.get(media_id)
+    elif media_type == "video":
+        media = MediaVideoCard.query.get(media_id)
+    elif media_type == "doc":
+        media = MediaDocCard.query.get(media_id)
+    else:
+        return None
+
+    return media.image_path if media else None
+
 
 
 
