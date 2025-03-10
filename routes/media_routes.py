@@ -18,7 +18,7 @@ def get_medias():
 
 @media_bp.route("/upload", methods=["POST"])
 def upload_file():
-    if "file" not in request.files or "media_type" not in request.form:
+    if "file" not in request.files:
         return jsonify({"error": "File and media_type are required"}), 400
     print("supabase upload route is called")
     file = request.files["file"]
