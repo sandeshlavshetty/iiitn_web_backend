@@ -49,3 +49,13 @@ def protected():
     user = get_jwt_identity()
     return jsonify({"message": f"Welcome, {user['email']}!"}), 200
 
+@auth_bp.route("/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    """Refresh access token using a valid refresh token"""
+    user = get_jwt_identity()
+    new_access_token = create_access_token(identity=user)
+
+    response = jsonify({"access_token": new_access_token})
+    set_access_cookies(response, new_access_token)  # Ensure access token is set in cookies
+    return response, 200
