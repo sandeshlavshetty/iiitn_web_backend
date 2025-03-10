@@ -1,7 +1,11 @@
 from flask import Blueprint, jsonify, session
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token, jwt_required,
+    get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies
+)
+
 from database.models import Person
 from database import db
 
@@ -9,8 +13,7 @@ auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.route("/", methods=["GET"])
 def get_auths():
-    return jsonify({"message": "auth routes working!"})
-
+    return jsonify({"message": "Auth routes working!"})
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
