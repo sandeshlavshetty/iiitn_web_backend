@@ -59,3 +59,11 @@ def refresh():
     response = jsonify({"access_token": new_access_token})
     set_access_cookies(response, new_access_token)  # Ensure access token is set in cookies
     return response, 200
+
+@auth_bp.route("/logout", methods=["POST"])
+def logout():
+    """Logout user by clearing JWT cookies and session"""
+    response = jsonify({"message": "Logged out successfully"})
+    unset_jwt_cookies(response)  # Properly remove JWT cookies
+    session.clear()  # Clear session
+    return response, 200
