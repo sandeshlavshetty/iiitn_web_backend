@@ -64,14 +64,17 @@ def delete_media_type(media_id):
 def get_media_path(media_id, media_type):
     if media_type == "image":
         media = MediaImageCard.query.get(media_id)
+        return media.image_path if media else None
     elif media_type == "video":
         media = MediaVideoCard.query.get(media_id)
+        return media.video_path if media else None
     elif media_type == "doc":
         media = MediaDocCard.query.get(media_id)
+        return media.doc_path if media else None
     else:
         return None
 
-    return media.image_path if media else None
+    
 
 
 
