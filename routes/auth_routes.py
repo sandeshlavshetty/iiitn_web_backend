@@ -18,6 +18,7 @@ def get_auths():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
+    print("Received Data:", data)  # Debugging step
     email = data.get("email")
     password = data.get("password")
 
@@ -25,8 +26,8 @@ def login():
     
     if user and check_password_hash(user.password, password):
         # Generate JWT tokens
-        access_token = create_access_token(identity={"email": user.email_pri, "role": user.role})
-        refresh_token = create_refresh_token(identity={"email": user.email_pri, "role": user.role})
+        access_token = create_access_token(identity=user.email_pri, additional_claims={"role": user.role})
+        refresh_token = create_refresh_token(identity=user.email_pri, additional_claims={"role": user.role})
 
         # Store user info in Flask session
         session["user"] = {
