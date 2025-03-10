@@ -43,9 +43,8 @@ def login():
 
     return jsonify({"message": "Invalid credentials"}), 401
 
-
 @auth_bp.route("/protected", methods=["GET"])
-@jwt_required()  # Protect this route
+@jwt_required()
 def protected():
     user = get_jwt_identity()
     return jsonify({"message": f"Welcome, {user['email']}!"}), 200
