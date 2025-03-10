@@ -188,7 +188,7 @@ class FacultyStaff(db.Model):
     teaching = db.Column(db.Text)
     research = db.Column(db.Text)
     content = db.Column(db.Text)  # Added missing field from schema
-
+    preference = db.Column(db.Integer, default=0)  # Lower value indicates higher priority
     # Relationships
     person = db.relationship("Person", backref="faculty_staff", uselist=False)
     branch = db.relationship("Branch", backref="branch_faculty_staff")
@@ -210,6 +210,7 @@ class FacultyStaff(db.Model):
             "teaching": self.teaching,
             "research": self.research,
             "content": self.content,
+            "preference": self.preference,
             "publications": [pub.to_dict() for pub in self.publications],
         }
 

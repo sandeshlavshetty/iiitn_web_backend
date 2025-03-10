@@ -39,6 +39,7 @@ def get_faculty_staff():
             "d_id": branch.department.d_id,
             "dept_name": branch.department.dept_name,
             "content": faculty.content,
+            "preference": faculty.preference,
             "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
         }
         for faculty, person, branch, media in faculty_staff
@@ -80,6 +81,7 @@ def get_faculty_by_id(f_id):
         "d_id": branch.department.d_id,
         "dept_name": branch.department.dept_name,
         "content": faculty.content,
+        "preference": faculty.preference,
         "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
     }), 200
 
@@ -97,7 +99,8 @@ def create_faculty_staff():
         experience=data.get("experience"),
         teaching=data.get("teaching"),
         research=data.get("research"),
-        content = data.get("content")
+        content = data.get("content"),
+        preference = data.get("preference")
     )
 
     db.session.add(new_faculty_staff)
@@ -122,6 +125,7 @@ def update_faculty_staff(f_id):
     faculty_staff.experience = data.get("experience", faculty_staff.experience)
     faculty_staff.teaching = data.get("teaching", faculty_staff.teaching)
     faculty_staff.research = data.get("research", faculty_staff.research)
+    faculty_staff.preference = data.get("preference", faculty_staff.preference)
 
     db.session.commit()
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
