@@ -72,3 +72,13 @@ def logout():
     unset_jwt_cookies(response)  # Properly remove JWT cookies
     session.clear()  # Clear session
     return response, 200
+
+
+# Route to get current user info
+@auth_bp.route("/user", methods=["GET"])
+@jwt_required()  # Requires valid access token
+def get_current_user():
+    user = session.get("user")
+    if not user:
+        return jsonify({"message": "User not found"}), 401
+    return jsonify({"user": user})
