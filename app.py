@@ -28,8 +28,9 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app.config.from_object(Config)
 
+
 # Enable CORS globally
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True , resources={r"/*": {"origins": "*"}}) 
 
 # db.init_app(app)
 init_db(app)
