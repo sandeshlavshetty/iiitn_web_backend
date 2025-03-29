@@ -74,9 +74,9 @@ def get_media_details(media_id):
             "file_name": media.image_file_name if media_type == "image" else
                      media.video_file_name if media_type == "video" else
                      media.doc_file_name,
-            "file_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media_type == "image" else
-                        os.path.join(Config.SUPABASE_STORAGE_URL,media.video_path) if media_type == "video" else
-                        os.path.join(Config.SUPABASE_STORAGE_URL,media.doc_path)
+            "file_path": os.path.join(Config.MEDIA_BASE_URL,media.image_path) if media_type == "image" else
+                        os.path.join(Config.MEDIA_BASE_URL,media.video_path) if media_type == "video" else
+                        os.path.join(Config.MEDIA_BASE_URL,media.doc_path)
             })
 
 @media_bp.route("/<int:media_id>", methods=["DELETE"])
@@ -91,8 +91,8 @@ def delete_media_file(media_id):
 @media_bp.route("/<path:media_path>", methods=["GET"])
 def give_image_url(media_path):
     if media_path :
-        print(f"public url :- {os.path.join(Config.SUPABASE_STORAGE_URL,media_path)}")
-        return jsonify({"url": os.path.join(Config.SUPABASE_STORAGE_URL,media_path)})
+        print(f"public url :- {os.path.join(Config.MEDIA_BASE_URL,media_path)}")
+        return jsonify({"url": os.path.join(Config.MEDIA_BASE_URL,media_path)})
     
     return None
 
