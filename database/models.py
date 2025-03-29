@@ -237,7 +237,7 @@ class Publication(db.Model):
     status = db.Column(db.String(20), nullable=False)
     # Enum for type of publication
     type = db.Column(Enum("publication", "project", "consultancy", name="publication_type_enum"), nullable=False)
-    
+    pub_year = db.Column(db.Integer, nullable=False)
     # Updated branch to ENUM
     branch_enum = db.Column(Enum("CSE", "ECE", "BS", name="branch_enum"), nullable=False)
 
@@ -262,6 +262,7 @@ class Publication(db.Model):
             "branch": self.branch_enum,
             "lead_name": self.lead_name,
             "published_in": self.published_in,
+            "pub_year": self.pub_year
         }
 
 
