@@ -23,9 +23,14 @@ def save_file(file):
     file.save(file_path)
     return filename
 
-def delete_file(file_path):
-    """Deletes a file from the local storage."""
-    if not file_path or not os.path.exists(file_path):
+def delete_file(filename):
+    """Deletes a file from the local storage using only the filename."""
+    if not filename:
+        return False  # Invalid input
+
+    file_path = os.path.join(Config.UPLOAD_FOLDER, filename)  # Construct full path
+
+    if not os.path.exists(file_path):
         return False  # File doesn't exist
 
     try:
@@ -34,6 +39,7 @@ def delete_file(file_path):
     except Exception as e:
         print(f"Error deleting file: {e}")
         return False
+
 
 def update_file(file, old_file_path):
     """Replaces an existing file with a new one."""
