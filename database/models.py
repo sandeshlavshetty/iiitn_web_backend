@@ -6,10 +6,6 @@ from sqlalchemy.dialects.postgresql import ARRAY
 
 
 
-
-
-
-
 # media tables
 
 
@@ -239,7 +235,8 @@ class Publication(db.Model):
     content = db.Column(db.Text, nullable=False)
     link = db.Column(db.Text)
     status = db.Column(db.String(20), nullable=False)
-    type = db.Column(db.Text, nullable=False)
+    # Enum for type of publication
+    type = db.Column(Enum("publication", "project", "consultancy", name="publication_type_enum"), nullable=False)
     
     # Updated branch to ENUM
     branch_enum = db.Column(Enum("CSE", "ECE", "BS", name="branch_enum"), nullable=False)
