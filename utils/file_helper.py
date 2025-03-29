@@ -23,32 +23,25 @@ def save_file(file):
     file.save(file_path)
     return file_path
 
-
 def delete_file(file_path):
-    if not file_path:
-        return None  # Ensure early return
-    
-    delete_response = supabase.storage.from_(Config.SUPABASE_BUCKET).remove([file_path])
-    
-    print(f"Supabase delete response: {delete_response}")  # Debugging
-    
-    if not delete_response:  # If deletion fails
-        return "supa delete error"
-    
-    return True
+    """Deletes a file from the local storage."""
+    if not file_path or not os.path.exists(file_path):
+        return False  # File doesn't exist
 
+    try:
+        os.remove(file_path)
+        return True
+    except Exception as e:
+        print(f"Error deleting file: {e}")
+        return False
 
-def update_file(file,file_path_global):
+def update_file(file, old_file_path):
+    """Replaces an existing file with a new one."""
     if not file or not allowed_file(file.filename):
         return None
-    
-    filename = secure_filename(file.filename)  # Secure filename
-    file_path_local = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
-    
-    with open(file_path_local,"rb") as f:
-        update_response = supabase.storage.from_(Config.SUPABASE_BUCKET).update(f,file_path_global,file_options={"cache-control": "3600", "upsert": "true"})
-        
-    if not update_response:
-        return None
-    
-    return update_response
+
+    # Delete old file
+    delete_file(old_file_path)
+
+    # Save new file
+    return save_file(file)
