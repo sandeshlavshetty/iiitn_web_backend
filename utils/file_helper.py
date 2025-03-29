@@ -21,7 +21,7 @@ def save_file(file):
     os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
 
     file.save(file_path)
-    return file_path
+    return filename
 
 def delete_file(file_path):
     """Deletes a file from the local storage."""
