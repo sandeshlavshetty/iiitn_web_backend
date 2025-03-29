@@ -15,12 +15,9 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 900  # 15 minutes
     JWT_REFRESH_TOKEN_EXPIRES = 86400  # 1 day
     
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+    MEDIA_BASE_URL = os.getenv("MEDIA_BASE_URL")
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # Limit file size to 16MB
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "mp4"}  # Allowed file types
     
-    # Supabase Configuration
-    SUPABASE_URL = os.getenv('SUPABASE_URL')
-    SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-    SUPABASE_BUCKET = os.getenv('SUPABASE_BUCKET') 
-    SUPABASE_STORAGE_URL = os.getenv('SUPABASE_STORAGE_URL')
+    
