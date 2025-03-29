@@ -48,18 +48,19 @@ def get_media(media_id):
 
 
 def delete_media_type(media_id):
+    """Deletes media from database and local storage."""
     media = get_media(media_id)
     if not media:
-        return False  # Media does not exist in the database
-    
-    
-    supa_delete = delete_file(media.image_path)
-    if supa_delete == "supa delete error":  # Fixing check
-        return False  # Prevent database deletion if Supabase deletion fails
+        return False  # Media does not exist
 
+    # Delete file from local storage
+    delete_file(media.image_path)
+
+    # Remove from database
     db.session.delete(media)
     db.session.commit()
     return True
+
 
 def get_media_path(media_id, media_type):
     if media_type == "image":
