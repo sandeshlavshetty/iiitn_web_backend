@@ -10,23 +10,19 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in current_app.config["ALLOWED_EXTENSIONS"]
 
 def save_file(file):
-    """Saves file to local storage and returns file path."""
+    """Saves file to local storage and returns the file path."""
     if not file or not allowed_file(file.filename):
         return None
-    
-    filename = secure_filename(file.filename)  # Secure filename
-    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+
+    filename = secure_filename(file.filename)  
+    file_path = os.path.join(Config.UPLOAD_FOLDER, filename)
+
+    # Ensure directory exists
+    os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
+
     file.save(file_path)
-    file_path = file_path.replace("\\", "/")  # Convert backslashes to forward slashes
-    
-    
-    
-    with open(file_path, "rb") as f:
-        upload_response = supabase.storage.from_(Config.SUPABASE_BUCKET).upload(file_path, f)
-        
-    
-    file_path = upload_response.path    
     return file_path
+
 
 def delete_file(file_path):
     if not file_path:
