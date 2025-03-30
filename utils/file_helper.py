@@ -4,7 +4,7 @@ from flask import current_app
 from supabase import create_client
 from config import Config
 
-supabase = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)
+
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in current_app.config["ALLOWED_EXTENSIONS"]
