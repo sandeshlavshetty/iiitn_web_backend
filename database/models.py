@@ -199,7 +199,7 @@ class FacultyStaff(db.Model):
             "join_year": self.join_year,
             "media_img_id": self.media_img_id,
             "d_id": self.d_id,
-            "branch": self.branch.to_dict() if self.branch else None,
+            "department": self.department.to_dict() if self.department else None,
             "positions": self.positions,
             "f_or_s": self.f_or_s,
             "education": self.education,
