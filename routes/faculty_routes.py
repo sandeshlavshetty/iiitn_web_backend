@@ -13,7 +13,7 @@ def get_facultys():
 @faculty_bp.route("/faculty_staff", methods=["GET"])
 def get_faculty_staff():
     faculty_staff = (
-        db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
+        db.session.query(FacultyStaff, Person, Department, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
         .join(Department, FacultyStaff.d_id == Department.d_id)
         .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)  # Outer join to handle null images
@@ -34,15 +34,13 @@ def get_faculty_staff():
             "experience": faculty.experience,
             "teaching": faculty.teaching,
             "research": faculty.research,
-            "b_id": branch.b_id,
-            "branch_name": branch.branch_name,
-            "d_id": branch.department.d_id,
-            "dept_name": branch.department.dept_name,
+            "d_id": department.d_id,
+            "dept_name": department.dept_name,
             "content": faculty.content,
             "preference": faculty.preference,
             "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
         }
-        for faculty, person, branch, media in faculty_staff
+        for faculty, person, department, media in faculty_staff
     ]
 
     return jsonify(result)
@@ -50,9 +48,9 @@ def get_faculty_staff():
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["GET"])
 def get_faculty_by_id(f_id):
     faculty_staff = (
-        db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
+        db.session.query(FacultyStaff, Person, Department, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
-        .join(Branch, FacultyStaff.b_id == Branch.b_id)
+        .join(Department, FacultyStaff.d_id == Department.d_id)
         .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)
         .filter(FacultyStaff.f_id == f_id)
         .first()
@@ -61,7 +59,7 @@ def get_faculty_by_id(f_id):
     if not faculty_staff:
         return jsonify({"message": "Faculty/Staff not found"}), 404
 
-    faculty, person, branch, media = faculty_staff
+    faculty, person, department, media = faculty_staff
 
     return jsonify({
         "f_id": faculty.f_id,
@@ -76,10 +74,8 @@ def get_faculty_by_id(f_id):
         "experience": faculty.experience,
         "teaching": faculty.teaching,
         "research": faculty.research,
-        "b_id": branch.b_id,
-        "branch_name": branch.branch_name,
-        "d_id": branch.department.d_id,
-        "dept_name": branch.department.dept_name,
+        "d_id": department.d_id,
+    "dept_name": department.dept_name,
         "content": faculty.content,
         "preference": faculty.preference,
         "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
@@ -92,7 +88,7 @@ def create_faculty_staff():
         p_id=data["p_id"],
         join_year=data["join_year"],
         media_img_id=data.get("media_img_id"),
-        b_id=data["b_id"],  # Updated from d_id to b_id
+        d_id=data["d_id"],  # CHANGED from b_id to d_id
         positions=data["positions"],
         f_or_s=data["f_or_s"],
         education=data.get("education"),
@@ -118,7 +114,7 @@ def update_faculty_staff(f_id):
     faculty_staff.p_id = data.get("p_id", faculty_staff.p_id)
     faculty_staff.join_year = data.get("join_year", faculty_staff.join_year)
     faculty_staff.media_img_id = data.get("media_img_id", faculty_staff.media_img_id)
-    faculty_staff.b_id = data.get("b_id", faculty_staff.b_id)  # Updated from d_id to b_id
+    faculty_staff.d_id = data.get("d_id", faculty_staff.d_id)  # CHANGED from b_id
     faculty_staff.positions = data.get("positions", faculty_staff.positions)
     faculty_staff.f_or_s = data.get("f_or_s", faculty_staff.f_or_s)
     faculty_staff.education = data.get("education", faculty_staff.education)
@@ -166,7 +162,7 @@ def create_default_faculty_staff():
         p_id=data.get("p_id"),  # Required as it's unique and foreign key
         join_year=data.get("join_year", 2024),  # Default join year if not provided
         media_img_id=None,
-        b_id=data.get("b_id"),  # Required foreign key
+        d_id=data.get("d_id"),  # CHANGED from b_id to d_id
         positions=data.get("positions", ""),  # Default to empty string
         f_or_s=data.get("f_or_s", "Faculty"),  # Defaulting to "Faculty"
         education=None,
