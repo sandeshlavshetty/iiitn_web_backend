@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from database.models import FacultyStaff, db, Person, Branch, MediaImageCard
+from database.models import FacultyStaff, db, Person, Branch, MediaImageCard , Department
 from config import Config
 import os
 
@@ -15,7 +15,7 @@ def get_faculty_staff():
     faculty_staff = (
         db.session.query(FacultyStaff, Person, Branch, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
-        .join(Branch, FacultyStaff.b_id == Branch.b_id)
+        .join(Department, FacultyStaff.d_id == Department.d_id)
         .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)  # Outer join to handle null images
         .all()
     )
