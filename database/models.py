@@ -180,7 +180,7 @@ class FacultyStaff(db.Model):
     positions = db.Column(db.Text, nullable=False)
     f_or_s = db.Column(db.Enum("Faculty", "Staff", name="ForS"), nullable=False)
     education = db.Column(db.Text)
-    experience = db.Column(db.Integer)  # Changed to Integer
+    experience = db.Column(db.Text)  # Changed to Integer
     teaching = db.Column(db.Text)
     research = db.Column(db.Text)
     content = db.Column(db.Text)  # Added missing field from schema
