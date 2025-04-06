@@ -8,6 +8,7 @@ publication_bp = Blueprint("publication",__name__)
 # Allowed ENUM values for validation
 VALID_TYPES = {"publication", "project", "consultancy"}
 VALID_BRANCHES = {"CSE", "ECE", "BS"}
+VALID_STATUSES = {"ongoing", "completed", "proposed"}
 
 # Create Publication Route
 @publication_bp.route("/", methods=["POST"])
@@ -24,6 +25,9 @@ def create_publication():
 
         if not isinstance(data.get("pub_year"), int):
             return jsonify({"error": "Invalid or missing pub_year (must be integer)"}), 400
+        
+        if data["status"] not in VALID_STATUSES:
+            return jsonify({"error": f"Invalid status: {data['status']}. Allowed: {list(VALID_STATUSES)}"}), 400
         
         new_pub = Publication(
             title=data["title"],
@@ -90,6 +94,8 @@ def update_publication(pub_id):
 
     if "branch_enum" in data and data["branch_enum"] not in VALID_BRANCHES:
         return jsonify({"error": f"Invalid branch_enum: {data['branch_enum']}. Allowed: {list(VALID_BRANCHES)}"}), 400
+    if "status" in data and data["status"] not in VALID_STATUSES:
+        return jsonify({"error": f"Invalid status: {data['status']}. Allowed: {list(VALID_STATUSES)}"}), 400
 
     pub.title = data.get("title", pub.title)
     pub.content = data.get("content", pub.content)
