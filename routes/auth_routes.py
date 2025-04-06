@@ -31,6 +31,7 @@ def login():
 
         # Store user info in Flask session
         session["user"] = {
+            "user_id":user.p_id,
             "email": user.email_pri,
             "role": user.role,
             "name": user.name
