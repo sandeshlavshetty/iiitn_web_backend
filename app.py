@@ -9,6 +9,8 @@ from config import Config
 from routes.student_routes import student_bp
 from flask_cors import CORS  # Import CORS
 from database import init_db
+from utils.error_handler import register_error_handlers  # ✅ Import error handler
+
   
 load_dotenv()  # Load environment variables
 
@@ -41,6 +43,8 @@ jwt = JWTManager(app)  # Initialize JWT
 
 
 register_routes(app)  # Register routes from routes/
+register_error_handlers(app)  # ✅ Register global error handlers
+
 
 if __name__ == "__main__":
     app.run(debug=True)
