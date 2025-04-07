@@ -38,7 +38,7 @@ def get_faculty_staff():
             "dept_name": department.dept_name,
             "content": faculty.content,
             "preference": faculty.preference,
-            "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
+            "image_path": os.path.join(Config.MEDIA_BASE_URL,media.image_path) if media.image_path else None
         }
         for faculty, person, department, media in faculty_staff
     ]
@@ -78,7 +78,7 @@ def get_faculty_by_id(f_id):
     "dept_name": department.dept_name,
         "content": faculty.content,
         "preference": faculty.preference,
-        "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
+        "image_path": os.path.join(Config.MEDIA_BASE_URL,media.image_path) if media.image_path else None
     }), 200
 
 @faculty_bp.route("/faculty_staff", methods=["POST"])
