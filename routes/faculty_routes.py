@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from database.models import FacultyStaff, db, Person, Branch, MediaImageCard , Department, Publication,SocialMedia
 from config import Config
 import os
+from collections import defaultdict
 
 
 faculty_bp = Blueprint("faculty", __name__)
@@ -181,43 +182,38 @@ def create_default_faculty_staff():
         "message": "Faculty/Staff created successfully",
         "faculty_staff": new_faculty_staff.to_dict()
     }), 201
-
-
-
-
+    
+    
 @faculty_bp.route("/faculty_by_department/<int:d_id>", methods=["GET"])
 def get_faculty_by_department(d_id):
     # Fetch faculty data by department
     faculty_staff = (
-        db.session.query(FacultyStaff, Person, SocialMedia, Department, MediaImageCard, Publication)
+        db.session.query(FacultyStaff, Person, SocialMedia, Department, MediaImageCard)
         .join(Person, FacultyStaff.p_id == Person.p_id)
         .join(Department, FacultyStaff.d_id == Department.d_id)
         .outerjoin(SocialMedia, Person.sm_id == SocialMedia.sm_id)
-        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)  # Outer join to handle null images
-        .join(Publication, FacultyStaff.f_id == Publication.f_id)  # Join with Publication
+        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)  # Outer join for images
         .filter(Department.d_id == d_id)
         .order_by(FacultyStaff.preference.asc())  # Order by preference ascending
         .all()
     )
 
-    grouped_publications = {}
     result = []
 
-    for faculty, person, sm, department, media, publication in faculty_staff:
-        # Group publications by type
-        if publication.type not in grouped_publications:
-            grouped_publications[publication.type] = []
-        grouped_publications[publication.type].append({
-            "pub_id": publication.pub_id,
-            "title": publication.title,
-            "content": publication.content,
-            "status": publication.status,
-            "type": publication.type,
-            "branch": publication.branch_enum,
-            "lead_name": publication.lead_name,
-            "published_in": publication.published_in,
-            "pub_year": publication.pub_year
-        })
+    for faculty, person, sm, department, media in faculty_staff:
+        # Group publications by type for each faculty
+        publications_by_type = defaultdict(list)
+        for publication in faculty.publications:
+            publications_by_type[publication.type].append({
+                "pub_id": publication.pub_id,
+                "title": publication.title,
+                "content": publication.content,
+                "status": publication.status,
+                "branch": publication.branch_enum,
+                "lead_name": publication.lead_name,
+                "published_in": publication.published_in,
+                "pub_year": publication.pub_year
+            })
 
         # Prepare faculty data with their person and social media details
         faculty_data = {
@@ -237,136 +233,16 @@ def get_faculty_by_department(d_id):
             "dept_name": department.dept_name,
             "content": faculty.content,
             "preference": faculty.preference,
-            "image_path": os.path.join(Config.MEDIA_BASE_URL, media.image_path) if media and media.image_path else None,
+            "image_path": os.path.join(Config.SUPABASE_STORAGE_URL, media.image_path) if media and media.image_path else None,
             "social_media": {
                 "insta": sm.insta if sm else None,
                 "twitter": sm.twitter if sm else None,
                 "linkedin": sm.linkedin if sm else None,
                 "youtube": sm.youtube if sm else None
             },
-            "publications": grouped_publications
+            "publications": dict(publications_by_type)  # Convert defaultdict to dict for JSON
         }
 
         result.append(faculty_data)
 
     return jsonify(result)
-
-#output format :- 
-# {
-#   "department": {
-#     "d_id": 1,
-#     "dept_name": "Computer Science Engineering",
-#     "faculty": [
-#       {
-#         "f_id": 1,
-#         "p_id": 101,
-#         "name": "Dr. John Doe",
-#         "email": "john.doe@example.com",
-#         "phone_no": "+1234567890",
-#         "join_year": 2015,
-#         "positions": "Professor",
-#         "f_or_s": "Faculty",
-#         "education": "PhD in Computer Science",
-#         "experience": "10 years",
-#         "teaching": "Data Structures, Algorithms",
-#         "research": "Machine Learning, AI",
-#         "content": "Researcher in AI and Data Science",
-#         "preference": 1,
-#         "social_media": {
-#           "insta": "john_doe_insta",
-#           "twitter": "john_doe_twitter",
-#           "linkedin": "john_doe_linkedin",
-#           "youtube": "john_doe_youtube"
-#         },
-#         "publications": {
-#           "publication": [
-#             {
-#               "pub_id": 101,
-#               "title": "Deep Learning for AI",
-#               "content": "In-depth research on deep learning algorithms",
-#               "link": "https://example.com/deep-learning-ai",
-#               "status": "completed",
-#               "pub_year": 2020,
-#               "lead_name": "Dr. John Doe",
-#               "published_in": "AI Journal"
-#             }
-#           ],
-#           "project": [
-#             {
-#               "pub_id": 102,
-#               "title": "AI for Healthcare",
-#               "content": "A research project on AI applications in healthcare",
-#               "link": "https://example.com/ai-healthcare",
-#               "status": "ongoing",
-#               "pub_year": 2022,
-#               "lead_name": "Dr. John Doe",
-#               "published_in": "Tech Innovations"
-#             }
-#           ]
-#         }
-#       },
-#       {
-#         "f_id": 2,
-#         "p_id": 102,
-#         "name": "Prof. Alice Smith",
-#         "email": "alice.smith@example.com",
-#         "phone_no": "+0987654321",
-#         "join_year": 2012,
-#         "positions": "Associate Professor",
-#         "f_or_s": "Faculty",
-#         "education": "MSc in Computer Science",
-#         "experience": "8 years",
-#         "teaching": "Operating Systems, Networks",
-#         "research": "Network Security",
-#         "content": "Focuses on Cybersecurity and Network Defense",
-#         "preference": 2,
-#         "social_media": {
-#           "insta": "alice_smith_insta",
-#           "twitter": "alice_smith_twitter",
-#           "linkedin": "alice_smith_linkedin",
-#           "youtube": "alice_smith_youtube"
-#         },
-#         "publications": {
-#           "publication": [
-#             {
-#               "pub_id": 103,
-#               "title": "Secure Network Protocols",
-#               "content": "A study on improving security protocols in networks",
-#               "link": "https://example.com/secure-network-protocols",
-#               "status": "completed",
-#               "pub_year": 2018,
-#               "lead_name": "Prof. Alice Smith",
-#               "published_in": "Cybersecurity Journal"
-#             }
-#           ],
-#           "consultancy": [
-#             {
-#               "pub_id": 104,
-#               "title": "Network Security Consulting",
-#               "content": "Providing consultation to tech firms on secure networks",
-#               "link": "https://example.com/network-consulting",
-#               "status": "completed",
-#               "pub_year": 2021,
-#               "lead_name": "Prof. Alice Smith",
-#               "published_in": "Consultancy Magazine"
-#             }
-#           ]
-#         }
-#       }
-#     ]
-#   }
-# }
-
-
-# # Similar routes for other departments (just change the department id)
-# @faculty_bp.route("/faculty_by_department/cse", methods=["GET"])
-# def get_faculty_by_cse():
-#     return get_faculty_by_department(d_id=1)  # Assuming CSE has d_id = 1
-
-# @faculty_bp.route("/faculty_by_department/ece", methods=["GET"])
-# def get_faculty_by_ece():
-#     return get_faculty_by_department(d_id=2)  # Assuming ECE has d_id = 2
-
-# @faculty_bp.route("/faculty_by_department/bs", methods=["GET"])
-# def get_faculty_by_bs():
-#     return get_faculty_by_department(d_id=3)  # Assuming BS has d_id = 3
