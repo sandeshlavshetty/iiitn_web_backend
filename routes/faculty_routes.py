@@ -286,3 +286,6 @@ def add_faculty_publication():
     db.session.commit()
 
     return jsonify({"message": "Faculty and publication linked successfully"}), 201
+
+
+
