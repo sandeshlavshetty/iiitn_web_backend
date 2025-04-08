@@ -3,30 +3,34 @@ from werkzeug.utils import secure_filename
 from flask import current_app
 from supabase import create_client
 from config import Config
+import uuid
+import os
 
 supabase = create_client(Config.SUPABASE_URL, Config.SUPABASE_KEY)
+
+
+# generate filename 
+def generate_unique_filename(original_filename):
+    ext = os.path.splitext(original_filename)[1]
+    return f"{uuid.uuid4().hex}{ext}"
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in current_app.config["ALLOWED_EXTENSIONS"]
 
-def save_file(file):
-    """Saves file to local storage and returns file path."""
+def save_file(file, unique_filename):
+    """Saves file with a unique name and uploads to Supabase."""
     if not file or not allowed_file(file.filename):
         return None
-    
-    filename = secure_filename(file.filename)  # Secure filename
-    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+
+    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], unique_filename)
     file.save(file_path)
-    file_path = file_path.replace("\\", "/")  # Convert backslashes to forward slashes
-    
-    
-    
+    file_path = file_path.replace("\\", "/")
+
     with open(file_path, "rb") as f:
-        upload_response = supabase.storage.from_(Config.SUPABASE_BUCKET).upload(file_path, f)
-        
-    
-    file_path = upload_response.path    
-    return file_path
+        upload_response = supabase.storage.from_(Config.SUPABASE_BUCKET).upload(unique_filename, f)
+
+    return upload_response.path
+
 
 def delete_file(file_path):
     if not file_path:

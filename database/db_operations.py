@@ -25,17 +25,9 @@ def add_media(file_name, file_path):
     db.session.commit()
     return media
 
-# def get_media(media_type, media_id):
-#     """Fetch media details by ID."""
-#     if media_type == "image":
-#         return MediaImageCard.query.get(media_id)
-#     elif media_type == "video":
-#         if media_id:
-#             return MediaVideoCard.query.get(media_id)
-#     elif media_type == "doc":
-#         if media_id:
-#             return MediaDocCard.query.get(media_id)
-#     return None
+
+
+
 
 def get_media(media_id):
     """Fetch media details by ID from any media table."""

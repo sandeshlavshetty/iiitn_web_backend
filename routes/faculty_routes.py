@@ -248,8 +248,6 @@ def get_faculty_by_department(d_id):
     return jsonify(result)
 
 
-
-
 @faculty_bp.route("/faculty_staff/publication", methods=["POST"])
 def add_faculty_publication():
     data = request.json
