@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify, current_app
 import os
 from utils.file_helper import save_file,delete_file,update_file
 from database.db_operations import add_media, get_media, delete_media_type, create_media,get_all_media,get_media_by_id,update_media,delete_media,get_media_path
-
+from database.models import MediaImageCard, MediaVideoCard, MediaDocCard
+from database import db  # Make sure db is imported
 # from flask_jwt_extended import jwt_required
 from database.models import Media  # Ensure Media model is imported
 from config import Config
@@ -14,35 +15,52 @@ def get_medias():
     return jsonify({"message": "media routes working!"})
 
 
-# img,video,doc routes
 
 @media_bp.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
-        return jsonify({"error": "File and media_type are required"}), 400
-    print(" upload route is called")
+        return jsonify({"error": "File is required"}), 400
+
     file = request.files["file"]
-    
-
-    file_path = save_file(file)  # Store locally
-   
-    if not file_path:
-        return jsonify({"error": "Invalid file type"}), 400
-
-    # print(f"File name :- {file.filename}")
-    media_entry = add_media(file.filename, file_path)
-    if not media_entry:
-        return jsonify({"error": "Invalid media type"}), 400
-
     file_name = file.filename
     file_ext = file_name.split('.')[-1].lower()
+
+    # Determine media type
     if file_ext in ["jpg", "jpeg", "png", "gif", "webp"]:
-        media_type ="image"
+        media_type = "image"
     elif file_ext in ["mp4", "mov", "avi", "mkv"]:
         media_type = "video"
     else:
         media_type = "doc"
-    
+
+    # Check if file already exists
+    if media_type == "image":
+        existing = MediaImageCard.query.filter_by(image_file_name=file_name).first()
+    elif media_type == "video":
+        existing = MediaVideoCard.query.filter_by(video_file_name=file_name).first()
+    else:
+        existing = MediaDocCard.query.filter_by(doc_file_name=file_name).first()
+
+    if existing:
+        return jsonify({
+            "message": "File already exists",
+            "media_id": getattr(existing, "media_img_id", None) or
+                        getattr(existing, "media_vid_id", None) or
+                        getattr(existing, "media_doc_id", None),
+            "file_path": getattr(existing, "image_path", None) or
+                         getattr(existing, "video_path", None) or
+                         getattr(existing, "doc_path", None)
+        })
+
+    # If not found, save and insert into DB
+    file_path = save_file(file)  # Store locally
+    if not file_path:
+        return jsonify({"error": "Invalid file type"}), 400
+
+    media_entry = add_media(file.filename, file_path)
+    if not media_entry:
+        return jsonify({"error": "Failed to create media entry"}), 500
+
     return jsonify({
         "message": "File uploaded successfully",
         "media_id": media_entry.media_img_id if media_type == "image" else
