@@ -289,3 +289,67 @@ def add_faculty_publication():
 
 
 
+
+@faculty_bp.route("/all_faculty_grouped_by_department", methods=["GET"])
+def get_all_faculty_grouped_by_department():
+    from collections import defaultdict
+
+    # Query all faculty with relevant joins
+    faculty_staff = (
+        db.session.query(FacultyStaff, Person, SocialMedia, Department, MediaImageCard)
+        .join(Person, FacultyStaff.p_id == Person.p_id)
+        .join(Department, FacultyStaff.d_id == Department.d_id)
+        .outerjoin(SocialMedia, Person.sm_id == SocialMedia.sm_id)
+        .outerjoin(MediaImageCard, FacultyStaff.media_img_id == MediaImageCard.media_img_id)
+        .order_by(Department.dept_name, FacultyStaff.preference.asc())  # Sort by department then preference
+        .all()
+    )
+
+    departments_dict = defaultdict(list)
+
+    for faculty, person, sm, department, media in faculty_staff:
+        # Group publications by type for each faculty
+        publications_by_type = defaultdict(list)
+        for publication in faculty.publications:
+            publications_by_type[publication.type].append({
+                "pub_id": publication.pub_id,
+                "title": publication.title,
+                "content": publication.content,
+                "status": publication.status,
+                "branch": publication.branch_enum,
+                "lead_name": publication.lead_name,
+                "published_in": publication.published_in,
+                "pub_year": publication.pub_year
+            })
+
+        faculty_data = {
+            "f_id": faculty.f_id,
+            "p_id": person.p_id,
+            "name": person.name,
+            "email": person.email_pri,
+            "phone_no": person.phone_no,
+            "join_year": faculty.join_year,
+            "positions": faculty.positions,
+            "f_or_s": faculty.f_or_s,
+            "education": faculty.education,
+            "experience": faculty.experience,
+            "teaching": faculty.teaching,
+            "research": faculty.research,
+            "d_id": department.d_id,
+            "dept_name": department.dept_name,
+            "content": faculty.content,
+            "preference": faculty.preference,
+            "image_path": os.path.join(Config.SUPABASE_URL, media.image_path) if media and media.image_path else None,
+            "social_media": {
+                "insta": sm.insta if sm else None,
+                "twitter": sm.twitter if sm else None,
+                "linkedin": sm.linkedin if sm else None,
+                "youtube": sm.youtube if sm else None
+            },
+            "publications": dict(publications_by_type)
+        }
+
+        # Group faculty under their department name
+        departments_dict[department.dept_name].append(faculty_data)
+
+    return jsonify(departments_dict)
