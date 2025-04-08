@@ -3,7 +3,12 @@ from werkzeug.utils import secure_filename
 from flask import current_app
 from supabase import create_client
 from config import Config
+import uuid
 
+
+def generate_unique_filename(original_filename):
+    ext = os.path.splitext(original_filename)[1]
+    return f"{uuid.uuid4().hex}{ext}"
 
 
 def allowed_file(filename):

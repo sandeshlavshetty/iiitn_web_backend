@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 import os
-from utils.file_helper import save_file,delete_file,update_file
+from utils.file_helper import save_file,delete_file,update_file, generate_unique_filename
 from database.db_operations import add_media, get_media, delete_media_type, create_media,get_all_media,get_media_by_id,update_media,delete_media,get_media_path
 from database.models import MediaImageCard, MediaVideoCard, MediaDocCard
 from database import db  # Make sure db is imported
@@ -15,49 +15,38 @@ def get_medias():
     return jsonify({"message": "media routes working!"})
 
 
-
 @media_bp.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "File is required"}), 400
 
     file = request.files["file"]
-    file_name = file.filename
-    file_ext = file_name.split('.')[-1].lower()
+    original_filename = file.filename
+    file_ext = original_filename.split('.')[-1].lower()
 
     # Determine media type
     if file_ext in ["jpg", "jpeg", "png", "gif", "webp"]:
         media_type = "image"
     elif file_ext in ["mp4", "mov", "avi", "mkv"]:
         media_type = "video"
-    else:
+    elif file_ext in ["pdf", "doc", "docx", "txt"]:
         media_type = "doc"
-
-    # Check if file already exists
-    if media_type == "image":
-        existing = MediaImageCard.query.filter_by(image_file_name=file_name).first()
-    elif media_type == "video":
-        existing = MediaVideoCard.query.filter_by(video_file_name=file_name).first()
     else:
-        existing = MediaDocCard.query.filter_by(doc_file_name=file_name).first()
+        return jsonify({"error": "Unsupported file type"}), 400
 
-    if existing:
-        return jsonify({
-            "message": "File already exists",
-            "media_id": getattr(existing, "media_img_id", None) or
-                        getattr(existing, "media_vid_id", None) or
-                        getattr(existing, "media_doc_id", None),
-            "file_path": getattr(existing, "image_path", None) or
-                         getattr(existing, "video_path", None) or
-                         getattr(existing, "doc_path", None)
-        })
+    # Generate unique filename
+    unique_filename = generate_unique_filename(original_filename)
 
-    # If not found, save and insert into DB
-    file_path = save_file(file)  # Store locally
-    if not file_path:
-        return jsonify({"error": "Invalid file type"}), 400
+    # Replace the original file name with the unique one before saving
+    file.filename = unique_filename
 
-    media_entry = add_media(file.filename, file_path)
+    # Save file locally
+    saved_filename = save_file(file)
+    if not saved_filename:
+        return jsonify({"error": "Invalid or disallowed file"}), 400
+
+    # Add to DB with the unique filename
+    media_entry = add_media(unique_filename, saved_filename)
     if not media_entry:
         return jsonify({"error": "Failed to create media entry"}), 500
 
@@ -66,8 +55,8 @@ def upload_file():
         "media_id": media_entry.media_img_id if media_type == "image" else
                     media_entry.media_vid_id if media_type == "video" else
                     media_entry.media_doc_id,
-        "file_path": file_path
-    })
+        "file_path": saved_filename
+    }), 200
 
 
 @media_bp.route("/<int:media_id>", methods=["GET"])
