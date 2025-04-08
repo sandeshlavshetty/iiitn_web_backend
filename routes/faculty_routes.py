@@ -247,3 +247,42 @@ def get_faculty_by_department(d_id):
 
     return jsonify(result)
 
+
+
+@faculty_bp.route("/faculty_staff/publication", methods=["POST"])
+def add_faculty_publication():
+    data = request.json
+    f_id = data.get("f_id")
+    pub_id = data.get("pub_id")
+
+    if not f_id or not pub_id:
+        return jsonify({"message": "Missing 'f_id' or 'pub_id' in request"}), 400
+
+    # Check if the faculty and publication exist
+    faculty = FacultyStaff.query.get(f_id)
+    publication = Publication.query.get(pub_id)
+
+    if not faculty:
+        return jsonify({"message": f"Faculty with f_id {f_id} not found"}), 404
+
+    if not publication:
+        return jsonify({"message": f"Publication with pub_id {pub_id} not found"}), 404
+
+    # Check if the relation already exists
+    existing = db.session.execute(
+        faculty_publication.select().where(
+            (faculty_publication.c.f_id == f_id) & 
+            (faculty_publication.c.pub_id == pub_id)
+        )
+    ).fetchone()
+
+    if existing:
+        return jsonify({"message": "This publication is already associated with this faculty"}), 409
+
+    # Insert association
+    db.session.execute(
+        faculty_publication.insert().values(f_id=f_id, pub_id=pub_id)
+    )
+    db.session.commit()
+
+    return jsonify({"message": "Faculty and publication linked successfully"}), 201
