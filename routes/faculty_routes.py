@@ -338,7 +338,7 @@ def get_all_faculty_grouped_by_department():
             "dept_name": department.dept_name,
             "content": faculty.content,
             "preference": faculty.preference,
-            "image_path": os.path.join(Config.SUPABASE_URL, media.image_path) if media and media.image_path else None,
+            "image_path": os.path.join(Config.SUPABASE_STORAGE_URL, media.image_path) if media and media.image_path else None,
             "social_media": {
                 "insta": sm.insta if sm else None,
                 "twitter": sm.twitter if sm else None,
