@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from database.models import FacultyStaff, db, Person, Branch, MediaImageCard , Department,Publication,SocialMedia
+from database.models import FacultyStaff, db, Person, Branch, MediaImageCard , Department,Publication,SocialMedia, faculty_publication
 from config import Config
 import os
 from collections import defaultdict
