@@ -126,8 +126,8 @@ def fetch_all_media():
         'added_by': media.added_by,
         'added_time': media.added_time,
         "media_img_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(media.media_img_id, "image")) if media.media_img_id else None,
-"media_vid_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(media.media_vid_id, "video")) if media.media_vid_id else None,
-"media_doc_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(media.media_doc_id, "doc")) if media.media_doc_id else None,
+        "media_vid_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(media.media_vid_id, "video")) if media.media_vid_id else None,
+        "media_doc_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(media.media_doc_id, "doc")) if media.media_doc_id else None,
         "preference": media.preference,
         "expiry_date" : media.expiry_date,
         'date' : media.date

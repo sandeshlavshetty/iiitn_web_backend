@@ -6,7 +6,7 @@ from flask_jwt_extended import (
     get_jwt_identity, set_access_cookies, set_refresh_cookies, unset_jwt_cookies,get_jwt
 )
 
-from database.models import Person
+from database.models import Person, FacultyStaff
 from database import db
 
 auth_bp = Blueprint("auth", __name__)
@@ -23,27 +23,37 @@ def login():
     password = data.get("password")
 
     user = Person.query.filter_by(email_pri=email).first()
-    
+
     if user and check_password_hash(user.password, password):
         # Generate JWT tokens
         access_token = create_access_token(identity=user.email_pri, additional_claims={"role": user.role})
         refresh_token = create_refresh_token(identity=user.email_pri, additional_claims={"role": user.role})
 
-        # Store user info in Flask session
-        session["user"] = {
+        # Base user session data
+        session_data = {
             "id": user.p_id,
             "email": user.email_pri,
             "role": user.role,
-            "name": user.name
+            "name": user.name,
         }
 
+        # If user is faculty, attach f_id
+        if user.role.lower() == "faculty":
+            faculty_entry = FacultyStaff.query.filter_by(p_id=user.p_id).first()
+            if faculty_entry:
+                session_data["f_id"] = faculty_entry.f_id
+
+        # Store in Flask session
+        session["user"] = session_data
+
         # Set refresh token as HTTP-only cookie
-        response = jsonify({"access_token": access_token, "user": session["user"]})
-        set_access_cookies(response, access_token)  # Securely store access token in cookies
-        set_refresh_cookies(response, refresh_token)  # Store refresh token securely
+        response = jsonify({"access_token": access_token, "user": session_data})
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
         return response, 200
 
     return jsonify({"message": "Invalid credentials"}), 401
+
 
 @auth_bp.route("/protected", methods=["GET"])
 @jwt_required()
