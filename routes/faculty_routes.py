@@ -63,6 +63,34 @@ def get_faculty_by_id(f_id):
 
     faculty, person, department, media = faculty_staff
 
+    # Group publications by type
+    publications_by_type = {
+        "publications": [],
+        "projects": [],
+        "consultancy": []
+    }
+
+    for pub in faculty.publications:
+        pub_data = {
+            "pub_id": pub.pub_id,
+            "title": pub.title,
+            "content": pub.content,
+            "link": pub.link,
+            "status": pub.status,
+            "type": pub.type,
+            "pub_year": pub.pub_year,
+            "branch_enum": pub.branch_enum,
+            "lead_name": pub.lead_name,
+            "published_in": pub.published_in  # include this if it's not None
+        }
+
+        if pub.type == "publication":
+            publications_by_type["publications"].append(pub_data)
+        elif pub.type == "project":
+            publications_by_type["projects"].append(pub_data)
+        elif pub.type == "consultancy":
+            publications_by_type["consultancy"].append(pub_data)
+
     return jsonify({
         "f_id": faculty.f_id,
         "p_id": person.p_id,
@@ -77,10 +105,11 @@ def get_faculty_by_id(f_id):
         "teaching": faculty.teaching,
         "research": faculty.research,
         "d_id": department.d_id,
-    "dept_name": department.dept_name,
+        "dept_name": department.dept_name,
         "content": faculty.content,
         "preference": faculty.preference,
-        "image_path": os.path.join(Config.SUPABASE_STORAGE_URL,media.image_path) if media else None
+        "image_path": os.path.join(Config.SUPABASE_STORAGE_URL, media.image_path) if media and media.image_path else None,
+        "grouped_publications": publications_by_type
     }), 200
 
 @faculty_bp.route("/faculty_staff", methods=["POST"])
