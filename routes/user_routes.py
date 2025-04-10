@@ -104,7 +104,7 @@ def create_person():
     })
 
 
-@user_bp.route("/<int:p_id>", methods=["PUT"])
+@user_bp.route("/<int:p_id>", methods=["PATCH"])
 def modify_person(p_id):
     data = request.json
     person = update_person(p_id, **data)
