@@ -85,7 +85,7 @@ def get_card(c_id):
     return jsonify(card_data), 200
 
 
-@card_bp.route('/cards/<int:c_id>', methods=['PUT'])
+@card_bp.route('/cards/<int:c_id>', methods=['PATCH'])
 def edit_card(c_id):
     data = request.get_json()
     card = update_card(db.session, c_id, data)
@@ -163,7 +163,7 @@ def get_cards_by_sub_category(sub_category):
     return jsonify(cards_list), 200
 
 
-@card_bp.route('/cards/<int:c_id>/visibility', methods=['PUT'])
+@card_bp.route('/cards/<int:c_id>/visibility', methods=['PATCH'])
 def toggle_card_visibility(c_id):
     """Toggle the visibility of a card identified by c_id."""
     data = request.get_json()
