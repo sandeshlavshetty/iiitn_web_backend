@@ -80,7 +80,7 @@ def get_publication(pub_id):
     return jsonify(pub.to_dict()), 200
 
 # Update Publication Route
-@publication_bp.route("/<int:pub_id>", methods=["PUT"])
+@publication_bp.route("/<int:pub_id>", methods=["PATCH"])
 def update_publication(pub_id):
     pub = Publication.query.get(pub_id)
     if not pub:
