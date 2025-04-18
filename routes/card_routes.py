@@ -98,7 +98,6 @@ def remove_card(c_id):
 
 
 
-
 @card_bp.route('/cards/category/<string:category>', methods=['GET'])
 def get_cards_by_category(category):
     cards = Card.query.filter_by(c_category=category).all()
@@ -117,19 +116,20 @@ def get_cards_by_category(category):
             "content": card.content,
             "date": card.date.strftime('%Y-%m-%d') if card.date else None,
             "location": card.location,
-           "media_img_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_img_id, "image")) if card.media_img_id else None,
-        "media_vid_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_vid_id, "video")) if card.media_vid_id else None,
-        "media_doc_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_doc_id, "doc")) if card.media_doc_id else None,
+            "media_img_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_img_id, "image")) if card.media_img_id else None,
+            "media_vid_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_vid_id, "video")) if card.media_vid_id else None,
+            "media_doc_id": os.path.join(Config.MEDIA_BASE_URL, get_media_path(card.media_doc_id, "doc")) if card.media_doc_id else None,
             "updated_by": card.updated_by,
             "updated_time": card.updated_time.strftime('%Y-%m-%d %H:%M:%S') if card.updated_time else None,
             "added_by": card.added_by,
             "added_time": card.added_time.strftime('%Y-%m-%d %H:%M:%S') if card.added_time else None,
             "visibility": card.visibility,
             "preference": card.preference,
-            "expiry_date" : card.expiry_date 
+            "expiry_date": card.expiry_date.strftime('%Y-%m-%d') if card.expiry_date else None,  # format the expiry_date properly
         })
 
     return jsonify(cards_list), 200
+
 
 
 # ✅ Fetch Cards by Sub-Category
