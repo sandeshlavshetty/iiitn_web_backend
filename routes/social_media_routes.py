@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from database.db_operations import add_social_media, get_social_media, delete_social_media
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 social_media_bp = Blueprint("social_media", __name__)
 
 @social_media_bp.route("/", methods=["GET"])
@@ -18,6 +18,7 @@ def fetch_social_media():
     })
 
 @social_media_bp.route("/", methods=["POST"])
+@jwt_required()
 def update_social_media():
     data = request.json
     insta = data.get("insta", "")
@@ -33,6 +34,7 @@ def update_social_media():
     })
 
 @social_media_bp.route("/", methods=["DELETE"])
+@jwt_required()
 def remove_social_media():
     if delete_social_media():
         return jsonify({"message": "Social media links deleted"})
