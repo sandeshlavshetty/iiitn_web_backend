@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from database.db_operations import add_person, get_person, get_all_persons, update_person, delete_person,add_social_media
 
 
@@ -60,6 +60,7 @@ def fetch_person(p_id):
         } if p.social_media else None
     })
 @user_bp.route("/", methods=["POST"])
+@jwt_required()
 def create_person():
     data = request.json
     required_fields = ["email_pri", "name", "phone_no", "password", "role"]
@@ -105,6 +106,7 @@ def create_person():
 
 
 @user_bp.route("/<int:p_id>", methods=["PATCH"])
+@jwt_required()
 def modify_person(p_id):
     data = request.json
     person = update_person(p_id, **data)
@@ -114,6 +116,7 @@ def modify_person(p_id):
     return jsonify({"message": "Person updated", "p_id": person.p_id})
 
 @user_bp.route("/<int:p_id>", methods=["DELETE"])
+@jwt_required()
 def remove_person(p_id):
     if delete_person(p_id):
         return jsonify({"message": "Person deleted"})
