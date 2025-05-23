@@ -1,13 +1,12 @@
 
 from flask import Blueprint, request, jsonify
-# from flask_jwt_extended import jwt_required
 from config import Config
 import os
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 card_bp = Blueprint("card", __name__)
 
 @card_bp.route("/", methods=["GET"])
-# @jwt_required()
 def get_cards():
     return jsonify({"message": "card routes working!"})
 
@@ -44,7 +43,8 @@ def get_cards_table():
     
     return jsonify(cards_list), 200
 
-@card_bp.route('/cards', methods=['POST'])  #end_c
+@card_bp.route('/cards', methods=['POST'])
+@jwt_required()
 def create_card():
     data = request.get_json()
     # Default to True if visibility is not provided
@@ -86,12 +86,14 @@ def get_card(c_id):
 
 
 @card_bp.route('/cards/<int:c_id>', methods=['PATCH'])
+@jwt_required()
 def edit_card(c_id):
     data = request.get_json()
     card = update_card(db.session, c_id, data)
     return jsonify({"message": "Card updated"}) if card else (jsonify({"message": "Card not found"}), 404)
 
 @card_bp.route('/cards/<int:c_id>', methods=['DELETE'])
+@jwt_required()
 def remove_card(c_id):
     card = delete_card(db.session, c_id)
     return jsonify({"message": "Card deleted"}) if card else (jsonify({"message": "Card not found"}), 404)
@@ -164,6 +166,7 @@ def get_cards_by_sub_category(sub_category):
 
 
 @card_bp.route('/cards/<int:c_id>/visibility', methods=['PATCH'])
+@jwt_required()
 def toggle_card_visibility(c_id):
     """Toggle the visibility of a card identified by c_id."""
     data = request.get_json()
