@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify
 from database import db
 from database.models import Alumni, Student, Person
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 alumni_bp = Blueprint('alumni', __name__)
 
 # Create a new alumni record
 @alumni_bp.route('/alumni', methods=['POST'])
+@jwt_required()
 def create_alumni():
     data = request.get_json()
     s_id = data.get('s_id')
@@ -39,6 +41,7 @@ def get_alumni(s_id):
 
 # Update an alumni record
 @alumni_bp.route('/alumni/<s_id>', methods=['PUT'])
+@jwt_required()
 def update_alumni(s_id):
     alumni = Alumni.query.get(s_id)
     if not alumni:
@@ -53,6 +56,7 @@ def update_alumni(s_id):
 
 # Delete an alumni record
 @alumni_bp.route('/alumni/<s_id>', methods=['DELETE'])
+@jwt_required()
 def delete_alumni(s_id):
     alumni = Alumni.query.get(s_id)
     if not alumni:
