@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from database.models import db
 from sqlalchemy.exc import IntegrityError
 from database.models import Department, db, Branch
@@ -23,6 +23,7 @@ def get_branch_details(b_id):
 
 
 @department_bp.route("/departments/", methods=["POST"])
+@jwt_required()
 def create_department():
     data = request.json
     dept_name = data.get("dept_name")
@@ -54,6 +55,7 @@ def get_department(d_id):
 
 
 @department_bp.route("/departments/<int:d_id>", methods=["PUT"])
+@jwt_required()
 def update_department(d_id):
     department = Department.query.get_or_404(d_id)
     data = request.json
@@ -69,6 +71,7 @@ def update_department(d_id):
 
 
 @department_bp.route("/departments/<int:d_id>", methods=["DELETE"])
+@jwt_required()
 def delete_department(d_id):
     department = Department.query.get_or_404(d_id)
     db.session.delete(department)
@@ -78,6 +81,7 @@ def delete_department(d_id):
 
 
 @department_bp.route("/branches/", methods=["POST"])
+@jwt_required()
 def add_branch():
     data = request.json
     branch_name = data.get("branch_name")
@@ -114,6 +118,7 @@ def get_branch(b_id):
 
 
 @department_bp.route("/branches/<int:b_id>", methods=["DELETE"])
+@jwt_required()
 def delete_branch(b_id):
     branch = Branch.query.get_or_404(b_id)
     db.session.delete(branch)
