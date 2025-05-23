@@ -7,6 +7,7 @@ from database import db  # Make sure db is imported
 # from flask_jwt_extended import jwt_required
 from database.models import Media  # Ensure Media model is imported
 from config import Config
+from flask_jwt_extended import jwt_required, get_jwt_identity
 media_bp = Blueprint("media", __name__)
 
 @media_bp.route("/", methods=["GET"])
@@ -16,6 +17,7 @@ def get_medias():
 
 
 @media_bp.route("/upload", methods=["POST"])
+@jwt_required()
 def upload_file():
     if "file" not in request.files:
         return jsonify({"error": "File is required"}), 400
@@ -87,6 +89,7 @@ def get_media_details(media_id):
             })
 
 @media_bp.route("/<int:media_id>", methods=["DELETE"])
+@jwt_required()
 def delete_media_file(media_id):
     result = delete_media_type(media_id)
     if result:
@@ -108,6 +111,7 @@ def give_image_url(media_path):
 
 
 @media_bp.route('/media', methods=['POST'])
+@jwt_required()
 def create_new_media():
     data = request.get_json()
     new_media = create_media(data)
@@ -156,6 +160,7 @@ def fetch_media_by_id(m_id):
     }), 200
 
 @media_bp.route('/media/<int:m_id>', methods=['PUT'])
+@jwt_required()
 def modify_media(m_id):
     data = request.get_json()
     updated_media = update_media(m_id, data)
@@ -164,6 +169,7 @@ def modify_media(m_id):
     return jsonify({'message': 'Media updated successfully'}), 200
 
 @media_bp.route('/media/<int:m_id>', methods=['DELETE'])
+@jwt_required()
 def remove_media(m_id):
     if not delete_media(m_id):
         return jsonify({'error': 'Media not found'}), 404
