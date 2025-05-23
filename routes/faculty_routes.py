@@ -3,6 +3,7 @@ from database.models import FacultyStaff, db, Person, Branch, MediaImageCard , D
 from config import Config
 import os
 from collections import defaultdict
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 faculty_bp = Blueprint("faculty", __name__)
  
@@ -112,6 +113,7 @@ def get_faculty_by_id(f_id):
     }), 200
 
 @faculty_bp.route("/faculty_staff", methods=["POST"])
+@jwt_required()
 def create_faculty_staff():
     data = request.json
     new_faculty_staff = FacultyStaff(
@@ -134,6 +136,7 @@ def create_faculty_staff():
     return jsonify({"message": "Faculty/Staff created successfully"}), 201
 
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["PUT"])
+@jwt_required()
 def update_faculty_staff(f_id):
     data = request.json
     faculty_staff = FacultyStaff.query.get(f_id)
@@ -157,6 +160,7 @@ def update_faculty_staff(f_id):
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
 
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["DELETE"])
+@jwt_required()
 def delete_faculty_staff(f_id):
     faculty_staff = FacultyStaff.query.get(f_id)
 
@@ -168,6 +172,7 @@ def delete_faculty_staff(f_id):
     return jsonify({"message": "Faculty/Staff deleted successfully"}), 200
 
 @faculty_bp.route("/faculty_staff/<int:f_id>", methods=["PATCH"])
+@jwt_required()
 def patch_faculty_staff(f_id):
     data = request.json
     faculty_staff = FacultyStaff.query.get(f_id)
@@ -184,6 +189,7 @@ def patch_faculty_staff(f_id):
     return jsonify({"message": "Faculty/Staff updated successfully"}), 200
 
 @faculty_bp.route("/faculty_staff/default", methods=["PATCH"])
+@jwt_required()
 def create_default_faculty_staff():
     data = request.json
 
@@ -279,6 +285,7 @@ def get_faculty_by_department(d_id):
 
 
 @faculty_bp.route("/faculty_staff/publication", methods=["POST"])
+@jwt_required()
 def add_faculty_publication():
     data = request.json
     f_id = data.get("f_id")
