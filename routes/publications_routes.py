@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from database import db
 from database.models import Publication
 from sqlalchemy.exc import SQLAlchemyError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 publication_bp = Blueprint("publication",__name__)
 
@@ -12,6 +13,7 @@ VALID_STATUSES = {"ongoing", "completed", "proposed"}
 
 # Create Publication Route
 @publication_bp.route("/", methods=["POST"])
+@jwt_required()
 def create_publication():
     try:
         data = request.json
@@ -81,6 +83,7 @@ def get_publication(pub_id):
 
 # Update Publication Route
 @publication_bp.route("/<int:pub_id>", methods=["PATCH"])
+@jwt_required()
 def update_publication(pub_id):
     pub = Publication.query.get(pub_id)
     if not pub:
@@ -117,6 +120,7 @@ def update_publication(pub_id):
 
 # Delete Publication Route
 @publication_bp.route("/<int:pub_id>", methods=["DELETE"])
+@jwt_required()
 def delete_publication(pub_id):
     pub = Publication.query.get(pub_id)
 
