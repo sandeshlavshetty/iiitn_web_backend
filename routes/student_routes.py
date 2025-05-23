@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from database.models import db
 from sqlalchemy.exc import IntegrityError
 from database.models import Student, db
@@ -19,6 +19,7 @@ def get_students():
     return jsonify([{ "s_id": s.s_id, "p_id": s.p_id, "join_year": s.join_year, "d_id": s.d_id } for s in students])
 
 @student_bp.route("/students", methods=["POST"])
+@jwt_required()
 def create_student():
     data = request.json
     new_student = Student(
@@ -34,6 +35,7 @@ def create_student():
 
 
 @student_bp.route("/students/<string:s_id>", methods=["PUT"])
+@jwt_required()
 def update_student(s_id):
     data = request.json
     student = Student.query.get(s_id)
@@ -50,6 +52,7 @@ def update_student(s_id):
 
 
 @student_bp.route("/students/<string:s_id>", methods=["DELETE"])
+@jwt_required()
 def delete_student(s_id):
     student = Student.query.get(s_id)
     if not student:
