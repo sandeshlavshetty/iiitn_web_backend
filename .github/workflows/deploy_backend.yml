@@ -16,6 +16,7 @@ jobs:
 
       - name: Set up SSH
         run: |
+          set -x
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" | sed 's/\\n/\n/g' > ~/.ssh/github_ci
           chmod 600 ~/.ssh/github_ci
