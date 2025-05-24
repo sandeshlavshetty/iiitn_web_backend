@@ -23,7 +23,7 @@ jobs:
 
       - name: Deploy Backend
         run: |
-          ssh -o StrictHostKeyChecking=no web@${{ secrets.SERVER_IP }} << 'EOF'
+          ssh -i ~/.ssh/github_ci -o StrictHostKeyChecking=no web@${{ secrets.SERVER_IP }} << 'EOF'
             cd ~/iiitn_web/iiitn_web_backend
             git pull origin main
             source venv/bin/activate
