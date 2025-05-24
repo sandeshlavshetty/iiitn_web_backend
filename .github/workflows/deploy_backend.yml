@@ -16,6 +16,12 @@ jobs:
 
       - name: Set up SSH
         run: |
+          if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
+            echo "❌ SERVER_SSH_KEY is empty!"
+            exit 1
+          else
+            echo "✅ SERVER_SSH_KEY is available."
+          fi
           mkdir -p ~/.ssh
           echo -e "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
           chmod 600 ~/.ssh/github_ci
