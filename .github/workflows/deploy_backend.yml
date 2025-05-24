@@ -1,0 +1,38 @@
+
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - server-code
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy Backend
+        run: |
+          ssh -o StrictHostKeyChecking=no web@${{ secrets.SERVER_IP }} << 'EOF'
+            cd ~/iiitn_web/iiitn_web_backend
+            git pull origin main
+            source venv/bin/activate
+            pip install -r requirements.txt
+            flask db upgrade
+            sudo systemctl daemon-reload 
+            sudo systemctl restart iiitn_backend
+            sudo systemctl restart iiitn_backend.service
+            sudo systemctl restart iiitn_backend2.service
+            sudo systemctl restart iiitn_backend3.service
+            sudo systemctl restart iiitn_backend4.service
+          EOF
