@@ -28,6 +28,7 @@ college_backend/
 │
 └── migrations/           # Auto-generated database migrations
 #just resting
+
 📌 Explanation:
 ✅ app.py → Entry point for Flask
 ✅ config.py → Stores DB connection, JWT secret key, etc.
