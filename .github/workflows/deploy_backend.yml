@@ -17,7 +17,7 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
+          echo -e "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
           chmod 600 ~/.ssh/github_ci
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
