@@ -23,12 +23,13 @@ jobs:
             echo "✅ SERVER_SSH_KEY is available."
           fi
           mkdir -p ~/.ssh
-          echo -e "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
+          printf "%s\n" "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/github_ci
           chmod 600 ~/.ssh/github_ci
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy Backend
         run: |
+          set -e
           ssh -i ~/.ssh/github_ci -o StrictHostKeyChecking=no web@${{ secrets.SERVER_IP }} << 'EOF'
             cd ~/iiitn_web/iiitn_web_backend
             git pull origin main
